@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+
+    android:background="@drawable/bottom_nearly_dialog"
+    android:orientation="vertical"
+    android:padding="10dp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="1dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/nearlyDialogTopText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Top 3 luoghi nelle vicinanze"
+        android:layout_margin="3dp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/listview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/lineSplitter"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_margin="2dp"
+        android:background="#ABFFFFFF"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/listview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nearlyDialogTopText"> </LinearLayout>
+
+    <ListView
+        android:id="@+id/listview"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintTop_toBottomOf="@+id/lineSplitter"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

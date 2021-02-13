@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+
+    <color name="purple_700">#37782C</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+    <color name="colorGreenGradientDark">#37782C</color>
+    <color name="colorGreenGradientMiddle">#64BB6A</color>
+    <color name="colorGreenGradientLight">#9FD983</color>
+
+    <color name="cardBackgroundColor">#FEFED3</color>
+
+    <color name="buttonColor">#024064</color>
+
+
+
+</resources>
