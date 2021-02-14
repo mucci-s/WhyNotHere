@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class RegistrationActivity extends AppCompatActivity {
+
     private CircularImageView avatar;
     private EditText name;
     private EditText surname;
@@ -36,8 +37,10 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText confirmPassword;
     private EditText bio;
     private Button registrationButton;
+
     private static final int SELECT_AVATAR = 1;
     Uri imageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +55,14 @@ public class RegistrationActivity extends AppCompatActivity {
         bio = (EditText) this.findViewById(R.id.bioID);
         registrationButton = (Button) this.findViewById(R.id.registrationButtonID);
     }
+
     public void onClickAvatar(View view) {
         Intent avatarPickerIntent = new Intent(Intent.ACTION_PICK);
         avatarPickerIntent.setType("image/*");
         avatarPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(avatarPickerIntent, "Select avatar"), SELECT_AVATAR);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -119,6 +124,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequest);
     }
+
     private boolean checkField() {
         String name = this.name.getText().toString();
         String surname = this.surname.getText().toString();
@@ -135,7 +141,7 @@ public class RegistrationActivity extends AppCompatActivity {
         } else if (!(email.contains("@")) || (!(email.contains(".")))) {
             Toast.makeText(getApplicationContext(), "INSERIRE UNA EMAIL VALIDA!", Toast.LENGTH_LONG).show();
             return false;
-        } else if (password.length() < 5) {
+        } else if (password.length() < 9) {
             Toast.makeText(getApplicationContext(), "PASSWORD TROPPO CORTA!", Toast.LENGTH_LONG).show();
             return false;
         } else if (!(password.equals(confirmPassword))) {
@@ -143,4 +149,5 @@ public class RegistrationActivity extends AppCompatActivity {
             return false;
         } else return true;
     }
+
 }
