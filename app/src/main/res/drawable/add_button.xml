@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners android:radius="1000dp" />
+
+    <!-- GRANDEZZA FONT: 16 -->
+    <!-- COLORE: WHITE -->
+
+    <solid android:color="@color/colorGreenGradientLight"/>
+
+    <!--<gradient
+
+        android:endColor="#024064"
+        android:startColor="#3CB3C0"
+
+        />-->
+
+</shape>

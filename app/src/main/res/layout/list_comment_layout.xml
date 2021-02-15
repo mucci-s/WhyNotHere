@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-160dp">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/profileAvatarID"
+            android:layout_width="85dp"
+            android:layout_height="64dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:layout_width="322dp"
+            android:layout_height="64dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/authorID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Peppino" />
+
+            <TextView
+                android:id="@+id/commentID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Posto bellissimo" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScollView"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="1dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <GridView
+                        android:id="@+id/imageGrid"
+                        android:layout_width="340dp"
+                        android:layout_height="20dp"
+                        android:columnWidth="50dp"
+                        android:numColumns="auto_fit"
+                        android:scrollbars="horizontal"
+                        android:verticalSpacing="1dp">
+
+
+                    </GridView>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhyNotHere">
-        <activity android:name=".UserProfileActivity"></activity>
+        <activity android:name=".ViewPlaceActivity"></activity>
+        <activity android:name=".NewPlaceActivity" />
+        <activity android:name=".UserProfileActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -35,9 +37,8 @@
         <activity
             android:name=".MapsHomeActivity"
             android:label="@string/title_activity_maps_home" />
-
         <activity android:name=".RegistrationActivity" />
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

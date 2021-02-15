@@ -63,7 +63,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.mobile.whynothere.models.PlaceDataInfoModel;
-import com.mobile.whynothere.utility.CustomNearlyPlaceAdapter;
+import com.mobile.whynothere.utility.adapters.CustomNearlyPlaceAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -176,18 +176,21 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
                     case R.id.addplace:
 
-                        SharedPreferences userLoggedPreferences = getSharedPreferences("session", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = userLoggedPreferences.edit();
-                        try {
-                            JSONObject userPreferences = new JSONObject(userLogged);
-                            userPreferences.put("session", false);
-                            editor.putString("UserLogged", userPreferences.toString());
-                            editor.apply();
-                            Toast.makeText(getApplicationContext(), "LOG OUT", Toast.LENGTH_LONG).show();
+                        Intent goToUserProfileIntent = new Intent(MapsHomeActivity.this, NewPlaceActivity.class);
+                        startActivity(goToUserProfileIntent);
 
-                        } catch (JSONException e) {
-
-                        }
+//                        SharedPreferences userLoggedPreferences = getSharedPreferences("session", MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = userLoggedPreferences.edit();
+//                        try {
+//                            JSONObject userPreferences = new JSONObject(userLogged);
+//                            userPreferences.put("session", false);
+//                            editor.putString("UserLogged", userPreferences.toString());
+//                            editor.apply();
+//                            Toast.makeText(getApplicationContext(), "LOG OUT", Toast.LENGTH_LONG).show();
+//
+//                        } catch (JSONException e) {
+//
+//                        }
                         return true;
                 }
                 return false;

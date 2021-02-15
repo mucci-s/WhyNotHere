@@ -21,4 +21,32 @@
     <string name="title_activity_maps_home">Map</string>
 
 
+    <string name="newPlaceButtonID">New Place</string>
+
+    <string name="login">LOGIN</string>
+    <string name="cancelButtonID">ANNULLA</string>
+    <string name="addButtonID">AGGIUNGI</string>
+    <string name="delete">ELIMINA</string>
+    <string name="back">INDIETRO</string>
+    <string name="addPhotoButtonID">+</string>
+
+    <string name="titleID">Aggiungi un titolo . .</string>
+    <string name="descriptionID">Aggiungi una descrizione . .</string>
+
+    <string name="photoContentDescription">sample_image</string>
+
+    <string name="map_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCpXrkwVRYRYJS6MS9eTMAH2a1UZq9VYsw</string>
+    <string name="location_gps_alretDialog_tittle">ATTENZIONE</string>
+    <string name="location_gps_alretDialog_msg">Abilitare il GPS per procedere.</string>
+    <string name="yes">OK</string>
+    <string name="no">NO</string>
+    <string name="addPhotoTextID">Aggiungi foto</string>
+
+    <string name="titleExample">Oratino</string>
+    <string name="descriptionExample">Bellissimo posto!!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

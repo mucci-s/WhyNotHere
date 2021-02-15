@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_color">
+
+    <fragment
+        android:id="@+id/google_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="318dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewID"
+        android:layout_width="match_parent"
+        android:layout_height="317dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="330dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="84dp"
+        app:cardBackgroundColor="@color/cardBackgroundColor"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="391dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginRight="10dp">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="64dp"
+                android:layout_height="33dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:onClick="onClickViewPlace"
+                android:text="Button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_add_photo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button_add_photo"
+                android:layout_width="177dp"
+                android:layout_height="32dp"
+                android:background="@drawable/custom_add_photo_button"
+                android:drawableStart="@drawable/ic_add_to_photos"
+                android:drawableLeft="@drawable/ic_add_to_photos"
+                android:paddingLeft="10dp"
+                android:paddingEnd="12dp"
+                android:paddingRight="12dp"
+                android:text="@string/addPhotoTextID"
+                android:textColor="#FEFED3"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.373"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="15dp"
+            tools:context=".NewPlaceActivity">
+
+            <LinearLayout
+                android:id="@+id/formLayout"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/titleID"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/custom_input"
+                    android:drawableStart="@drawable/custom_title_icon"
+                    android:drawableLeft="@drawable/custom_title_icon"
+                    android:drawablePadding="12dp"
+                    android:hint="@string/titleID"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingRight="12dp"
+                    android:singleLine="false"
+                    android:textColor="#024064"
+                    android:textColorHighlight="#8BC34A"
+                    android:textColorLink="#8BC34A"
+                    android:textCursorDrawable="@drawable/background_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    tools:ignore="InvalidId">
+
+                </EditText>
+
+                <EditText
+                    android:id="@+id/descriptionID"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/titleID"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/custom_input"
+                    android:drawableStart="@drawable/custom_description_icon"
+                    android:drawableLeft="@drawable/custom_description_icon"
+                    android:drawablePadding="12dp"
+                    android:hint="@string/descriptionID"
+                    android:inputType="textMultiLine"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingRight="12dp"
+                    android:singleLine="false"
+                    android:textColor="#024064"
+                    android:textSize="20sp"
+                    android:textStyle="bold">
+
+
+                </EditText>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScollView"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="180dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <GridView
+                    android:id="@+id/imageGrid"
+                    android:layout_width="600dp"
+                    android:layout_height="121dp"
+                    android:columnWidth="130dp"
+                    android:numColumns="auto_fit"
+                    android:scrollbars="horizontal"
+                    android:verticalSpacing="2dp">
+
+
+                </GridView>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/cancelPlaceButtonID"
+        android:layout_width="187dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginLeft="29dp"
+        android:layout_marginEnd="195dp"
+        android:layout_marginRight="195dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/cancel_button"
+        android:onClick="onClickRegistration"
+        android:text="@string/cancelButtonID"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewID" />
+
+    <Button
+        android:id="@+id/confirmPlaceButtonID"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/custom_button"
+        android:onClick="onClickAddPlace"
+        android:text="@string/addButtonID"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewID" />
+
+</RelativeLayout>

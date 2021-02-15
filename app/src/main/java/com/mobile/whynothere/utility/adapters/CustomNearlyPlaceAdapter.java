@@ -1,4 +1,4 @@
-package com.mobile.whynothere.utility;
+package com.mobile.whynothere.utility.adapters;
 
 import android.content.Context;
 import android.location.Address;
