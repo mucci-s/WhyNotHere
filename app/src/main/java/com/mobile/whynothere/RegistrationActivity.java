@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,6 +39,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText confirmPassword;
     private EditText bio;
     private Button registrationButton;
+    private TextView loginTextView;
 
     private static final int SELECT_AVATAR = 1;
     Uri imageUri;
@@ -54,6 +57,7 @@ public class RegistrationActivity extends AppCompatActivity {
         confirmPassword = (EditText) this.findViewById(R.id.confirmPasswordID);
         bio = (EditText) this.findViewById(R.id.bioID);
         registrationButton = (Button) this.findViewById(R.id.registrationButtonID);
+        loginTextView = (TextView) this.findViewById(R.id.loginTextViewID);
     }
 
     public void onClickAvatar(View view) {
@@ -76,14 +80,18 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         }
     }
+
     public void onClickRegistration(View view) {
         if (this.checkField()) {
             insertUser();
         }
     }
+
     public void insertUser() {
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JSONObject jsonBody = null;
+
         try {
             jsonBody = new JSONObject(
                     "{\"email\":\"" + this.email.getText().toString() + "\"," +
@@ -95,14 +103,21 @@ public class RegistrationActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         final String url = "https://whynothere-app.herokuapp.com/user/createuser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
             @Override
             public void onResponse(JSONObject response) {
                 try {
+
                     if (response.getBoolean("userresult")) {
                         Toast.makeText(getApplicationContext(), "BENVENUTO!", Toast.LENGTH_LONG).show();
-                        //GO TO HOME
+
+                        JSONObject user = response.getJSONObject("user");
+                        user.put("session", true);
+                        signInAction(user);
+
                     } else {
                         if ((response.getJSONObject("message").getJSONObject("keyPattern").has("email")) &&
                                 (response.getJSONObject("message").getJSONObject("keyPattern").getInt("email") == 1)) {
@@ -117,21 +132,25 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
+
     }
 
     private boolean checkField() {
+
         String name = this.name.getText().toString();
         String surname = this.surname.getText().toString();
         String username = this.username.getText().toString();
         String email = this.email.getText().toString();
         String password = this.password.getText().toString();
         String confirmPassword = this.confirmPassword.getText().toString();
+
         if ((name.isEmpty()) || (surname.isEmpty()) || (username.isEmpty()) || (email.isEmpty()) || (password.isEmpty()) || (confirmPassword.isEmpty())) {
             Toast.makeText(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
             return false;
@@ -148,6 +167,29 @@ public class RegistrationActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
+
+    }
+
+    public void onClickLogin(View view) {
+        Intent goToLoginIntent = new Intent(this, LoginActivity.class);
+        this.startActivity(goToLoginIntent);
+        this.finish();
+    }
+
+    public void goToHome(JSONObject userInfo) {
+        Intent goToHomeIntent = new Intent(this, MapsHomeActivity.class);
+        goToHomeIntent.putExtra("user", userInfo.toString());
+        this.startActivity(goToHomeIntent);
+        this.finish();
+    }
+
+    private void signInAction(JSONObject user) {
+        SharedPreferences sessionPreferences = getSharedPreferences("session", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sessionPreferences.edit();
+        editor.putString("UserLogged", user.toString());
+        editor.apply();
+
+        this.goToHome(user);
     }
 
 }
