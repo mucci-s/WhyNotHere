@@ -51,6 +51,7 @@ public class UserProfileActivity extends AppCompatActivity {
         bio = (TextView) this.findViewById(R.id.profileBioID);
         spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
         likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
+        navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
 
         navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -70,7 +71,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         userPhotoFragment = new UserPhotoFragment();
-        navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
 
