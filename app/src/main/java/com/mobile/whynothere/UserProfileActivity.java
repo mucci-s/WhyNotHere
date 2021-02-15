@@ -32,7 +32,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ImageView spottedPlacesButton;
     private ImageView likedPlacesButton;
     private BottomNavigationView navigationBar;
-    private boolean spottedPlacesPressed = false;
+    private boolean spottedPlacesPressed = true;
     private boolean likedPlacesPressed = false;
 
     UserPhotoFragment userPhotoFragment;
