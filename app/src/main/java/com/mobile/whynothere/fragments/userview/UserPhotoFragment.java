@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.mobile.whynothere.R;
+import com.mobile.whynothere.utility.adapters.CustomImageAdaptorProfile;
 import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class UserPhotoFragment extends Fragment {
     }
 
     public void setDefaultImages(GridView gridView) {
-        DefaultImageAdaptor defaultImageAdaptor = new DefaultImageAdaptor(this.defaultImages, getContext());
+        CustomImageAdaptorProfile defaultImageAdaptor = new CustomImageAdaptorProfile(this.defaultImages, getContext());
         gridView.setAdapter(defaultImageAdaptor);
         gridView.setEnabled(false);
     }

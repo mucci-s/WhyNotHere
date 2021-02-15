@@ -310,6 +310,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
                     uriImages.add(clipData.getItemAt(i).getUri());
 
+                    Toast.makeText(getApplicationContext(), "uri imagine  " + clipData.getItemAt(i).getUri(), Toast.LENGTH_LONG).show();
                     try {
                         InputStream is = getContentResolver().openInputStream(uriImages.get(i));
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
