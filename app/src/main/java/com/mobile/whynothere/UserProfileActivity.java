@@ -52,11 +52,6 @@ public class UserProfileActivity extends AppCompatActivity {
         spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
         likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
 
-        userPhotoFragment = new UserPhotoFragment();
-        navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
-
         navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -73,6 +68,22 @@ public class UserProfileActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        userPhotoFragment = new UserPhotoFragment();
+        navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        navigationBar.setSelectedItemId(R.id.profile);
+    }
+
+    public void onClickNearlyButton(View view) {
+        goToHome();
     }
 
     public void onClickSpottedPlaces(View view) {
@@ -110,19 +121,9 @@ public class UserProfileActivity extends AppCompatActivity {
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userLikedPhotoFragment).commit();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        navigationBar.setSelectedItemId(R.id.profile);
-    }
-
     public void goToHome() {
         Intent goToHomeIntent = new Intent(this, MapsHomeActivity.class);
         this.startActivity(goToHomeIntent);
-    }
-
-    public void onClickNearlyButton(View view) {
-       goToHome();
     }
 
 }

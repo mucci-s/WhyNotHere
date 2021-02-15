@@ -114,7 +114,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     if (response.getBoolean("userresult")) {
                         Toast.makeText(getApplicationContext(), "BENVENUTO!", Toast.LENGTH_LONG).show();
 
-                        JSONObject user = response.getJSONObject("user");
+                        JSONObject user = response.getJSONObject("userdata");
                         user.put("session", true);
                         signInAction(user);
 
