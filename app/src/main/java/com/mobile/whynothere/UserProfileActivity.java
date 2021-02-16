@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView surname;
     private TextView username;
     private TextView bio;
+    private RatingBar ratingBar;
     private ImageView spottedPlacesButton;
     private ImageView likedPlacesButton;
     private BottomNavigationView navigationBar;
@@ -49,6 +51,7 @@ public class UserProfileActivity extends AppCompatActivity {
         //surname = (TextView) this.findViewById(R.id.profileSurnameID);
         username = (TextView) this.findViewById(R.id.profileUsernameID);
         bio = (TextView) this.findViewById(R.id.profileBioID);
+        ratingBar = (RatingBar) this.findViewById(R.id.ratingBarID);
         spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
         likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
         navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
@@ -60,11 +63,13 @@ public class UserProfileActivity extends AppCompatActivity {
                     case R.id.home:
                         goToHome();
                         return true;
-                    case R.id.profile:
 
+                    case R.id.profile:
                         return true;
+
                     case R.id.addplace:
                         return true;
+
                 }
                 return false;
             }

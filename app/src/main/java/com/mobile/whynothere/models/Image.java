@@ -18,6 +18,7 @@ import java.util.List;
 
 
 public class Image extends AppCompatActivity {
+
     ViewPager mPager;
     List<Bitmap> bitmapImages = new ArrayList<>();
 
@@ -27,22 +28,26 @@ public class Image extends AppCompatActivity {
         setContentView(R.layout.image);
 
         mPager = this.findViewById(R.id.pager);
+
        // List<Integer> images = getIntent().getExtras().getIntegerArrayList("images");
+
         List<Uri> images = getIntent().getExtras().getParcelableArrayList("images");
+
         int currentImage = getIntent().getExtras().getInt("current");
+
         Log.d("DEBUG", String.valueOf(images));
+
         for (int i = 0; i < images.size();i++){
+
             try {
-
                 bitmapImages.add(MediaStore.Images.Media.getBitmap(this.getContentResolver(),images.get(i)));
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
     }
-
 
 }
 

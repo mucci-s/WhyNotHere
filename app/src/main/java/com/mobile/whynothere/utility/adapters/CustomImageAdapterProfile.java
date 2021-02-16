@@ -10,12 +10,12 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-public class CustomImageAdaptorProfile extends BaseAdapter {
+public class CustomImageAdapterProfile extends BaseAdapter {
 
     List<Integer> imageIds;
     Context mContext;
 
-    public CustomImageAdaptorProfile(List<Integer> defaultImage, Context mContext) {
+    public CustomImageAdapterProfile(List<Integer> defaultImage, Context mContext) {
         this.imageIds = defaultImage;
         this.mContext = mContext;
     }
@@ -37,18 +37,17 @@ public class CustomImageAdaptorProfile extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ImageView imageView = (ImageView) convertView;
 
         if(imageView == null){
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(300,280));
+            imageView.setLayoutParams(new GridView.LayoutParams(400,400));
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
 
         imageView.setImageResource(imageIds.get(position));
 
-
         return imageView;
     }
+
 }

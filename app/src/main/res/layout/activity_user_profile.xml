@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:background="@drawable/background_color"
-    tools:context=".UserProfileActivity"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    android:background="@drawable/background_color"
+    tools:context=".UserProfileActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewID"
+        android:layout_width="match_parent"
+
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+
+        android:layout_marginBottom="20dp"
         app:cardBackgroundColor="@color/cardBackgroundColor"
 
         app:cardCornerRadius="25dp"
         app:cardElevation="15dp"
-
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
 
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,9 +53,6 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/userInfoID"
 
-                app:cardCornerRadius="25dp"
-                app:cardElevation="15dp"
-
                 android:layout_width="216dp"
                 android:layout_height="106dp"
 
@@ -64,7 +60,10 @@
                 android:layout_alignParentEnd="true"
 
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp">
+                android:layout_marginEnd="10dp"
+
+                app:cardCornerRadius="25dp"
+                app:cardElevation="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -72,15 +71,13 @@
 
                     <TextView
                         android:id="@+id/profileBioID"
-                        android:layout_width="196dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="64dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="56dp"
                         android:layout_marginRight="10dp"
                         android:text="Studente di informatica" />
 
@@ -91,22 +88,48 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="10dp"
                         android:text="Davide Russo" />
 
                     <TextView
                         android:id="@+id/profileUsernameID"
-                        android:layout_width="196dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="41dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="33dp"
                         android:layout_marginRight="10dp"
-                        android:text="daviderusso98" />
+                        android:text="daviderusso98"
+                        android:textStyle="bold" />
+
+                    <RatingBar
+                        android:id="@+id/ratingBarID"
+
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="79dp"
+                        android:layout_marginBottom="11dp"
+                        android:numStars="3" />
+
+                    <Button
+                        android:id="@+id/settingsButtonID"
+                        android:layout_width="22dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="#00FFFFFF"
+                        android:backgroundTint="#00FFFFFF"
+                        android:drawableStart="@drawable/ic_baseline_settings_24" />
 
                 </RelativeLayout>
 
@@ -114,18 +137,24 @@
 
             <View
                 android:id="@+id/dividerID"
+
+                android:background="?android:attr/listDivider"
+
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
+
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
+
                 android:layout_marginTop="127dp"
+
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+
+                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="?android:attr/listDivider"
-                tools:ignore="UnknownId" />
+
+                android:layout_alignParentTop="true"/>
 
             <ImageView
                 android:id="@+id/profileSpottedPlacesID"
@@ -151,15 +180,19 @@
 
             <FrameLayout
                 android:id="@+id/frameLayoutID"
+
                 android:layout_width="match_parent"
-                android:layout_height="468dp"
+                android:layout_height="wrap_content"
+
                 android:layout_below="@+id/dividerID"
+
                 android:layout_alignParentStart="true"
+
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="38dp"
-                android:layout_marginEnd="0dp" />
+                android:layout_marginTop="38dp">
+
+            </FrameLayout>
 
         </RelativeLayout>
 
@@ -171,7 +204,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
 
-
         <ImageButton
             android:id="@+id/nearlyButtonID"
             android:layout_width="45dp"
@@ -181,8 +213,7 @@
             android:background="@drawable/custom_button_white"
             android:onClick="onClickNearlyButton"
             android:src="@drawable/ic_near"
-            android:tint="@color/colorGreenGradientDark"/>
-
+            android:tint="@color/colorGreenGradientDark" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navigation_bar"
