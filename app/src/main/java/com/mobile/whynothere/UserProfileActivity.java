@@ -33,28 +33,28 @@ import org.json.JSONObject;
 
 public class UserProfileActivity extends AppCompatActivity {
 
+    //this.spottedPlacesButton.setMaxHeight(20); Problemi con icon
+    //this.spottedPlacesButton.setMaxWidth(20);
+
     private CircularImageView avatar;
-    private TextView name;
-    private TextView surname;
+    private TextView nameSurname;
     private TextView username;
     private TextView bio;
     private ImageView settingsButton;
     private ImageView spottedPlacesButton;
     private ImageView likedPlacesButton;
 
-    private boolean settingsButtonPressed = false;
     private boolean spottedPlacesPressed = true;
     private boolean likedPlacesPressed = false;
 
     private BottomNavigationView navigationBar;
 
     private String userLogged;
+
     private String userName;
     private String userSurname;
     private String userUsername;
-    private String userEmail;
     private String userId;
-    private String userPassword;
     private String userBio;
 
     UserPhotoFragment userPhotoFragment;
@@ -66,9 +66,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        userLogged = getIntent().getStringExtra("userLogged");
-
-        System.out.println("UTENTE 1");
+        this.userLogged = getIntent().getStringExtra("userLogged");
 
         try {
             JSONObject userObject = new JSONObject(userLogged);
@@ -77,21 +75,18 @@ public class UserProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        System.out.println("UTENTE X" + userId);
+        this.getUserData(userId);  //Se lo metto dopo è meglio?
 
-        getUser(userId);
+        this.avatar = (CircularImageView) this.findViewById(R.id.profileAvatarID);
+        this.nameSurname = (TextView) this.findViewById(R.id.profileNameSurnameID);
+        this.username = (TextView) this.findViewById(R.id.profileUsernameID);
+        this.bio = (TextView) this.findViewById(R.id.profileBioID);
+        this.settingsButton = (ImageView) this.findViewById(R.id.settingsButtonID);
+        this.spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
+        this.likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
 
-        avatar = (CircularImageView) this.findViewById(R.id.profileAvatarID);
-        name = (TextView) this.findViewById(R.id.profileNameID);
-        //surname = (TextView) this.findViewById(R.id.profileSurnameID);
-        username = (TextView) this.findViewById(R.id.profileUsernameID);
-        bio = (TextView) this.findViewById(R.id.profileBioID);
-        settingsButton = (ImageView) this.findViewById(R.id.settingsButtonID);
-        spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
-        likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
-        navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
-
-        navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        this.navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
+        this.navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -110,16 +105,19 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        userPhotoFragment = new UserPhotoFragment();
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
+        this.userPhotoFragment = new UserPhotoFragment();
+        this.fragmentManager = getSupportFragmentManager();
+        this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        navigationBar.setSelectedItemId(R.id.profile);
+
+        this.navigationBar.setSelectedItemId(R.id.profile);
+
+        this.settingsButton.setImageResource(R.drawable.settings_grey);
     }
 
     public void onClickNearlyButton(View view) {
@@ -148,25 +146,17 @@ public class UserProfileActivity extends AppCompatActivity {
         if (this.spottedPlacesPressed) {
             this.spottedPlacesPressed = false;
             this.spottedPlacesButton.setImageResource(R.drawable.map_grey);
-            this.spottedPlacesButton.setMaxHeight(20);
-            this.spottedPlacesButton.setMaxWidth(20);
         }
 
         this.likedPlacesPressed = true;
         this.likedPlacesButton.setImageResource(R.drawable.heart_blue);
-        this.likedPlacesButton.setMaxHeight(20);
-        this.likedPlacesButton.setMaxWidth(20);
 
         this.userLikedPhotoFragment = new UserLikedPhotoFragment();
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userLikedPhotoFragment).commit();
     }
 
     public void onClickSettings(View view) {
-        this.settingsButtonPressed = true;
         this.settingsButton.setImageResource(R.drawable.settings_blue);
-        this.settingsButton.setMaxHeight(2);
-        this.settingsButton.setMaxWidth(2);
-
         this.goToSettings();
     }
 
@@ -178,29 +168,19 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public void goToSettings() {
         Intent goToSettingsIntent = new Intent(this, UserSettings.class);
+        goToSettingsIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToSettingsIntent);
     }
 
-    public void getUser(String userId) {
-
+    public void getUserData(String userId) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         JSONObject jsonBody = null;
 
         try {
-
-            System.out.println("USER ID " + userId);
-
             jsonBody = new JSONObject("{\"_id\":" + userId + "}");
-
-            System.out.println(jsonBody.toString());
-
         } catch (JSONException e) {
             e.printStackTrace();
-            System.out.println("ERRORE NOSTRO");
         }
-
-        System.out.println("ARRIVA QUA");
 
         final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
 
@@ -212,10 +192,15 @@ public class UserProfileActivity extends AppCompatActivity {
                 try {
                     JSONObject user = response.getJSONObject("user");
 
-                    System.out.println("UTENTE:" + user.toString());
                     userName = user.getString("name");
+                    userSurname = user.getString("surname");
+                    nameSurname.setText(userName + " " + userSurname);
 
-                    name.setText(userName);
+                    userUsername = user.getString("username");
+                    username.setText(userUsername);
+
+                    userBio = user.getString("bio");
+                    bio.setText(userBio);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

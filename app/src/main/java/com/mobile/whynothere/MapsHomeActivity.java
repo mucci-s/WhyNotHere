@@ -180,18 +180,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                         goToUserProfileIntent.putExtra("userLogged", userLogged);
                         startActivity(goToUserProfileIntent);
 
-//                        SharedPreferences userLoggedPreferences = getSharedPreferences("session", MODE_PRIVATE);
-//                        SharedPreferences.Editor editor = userLoggedPreferences.edit();
-//                        try {
-//                            JSONObject userPreferences = new JSONObject(userLogged);
-//                            userPreferences.put("session", false);
-//                            editor.putString("UserLogged", userPreferences.toString());
-//                            editor.apply();
-//                            Toast.makeText(getApplicationContext(), "LOG OUT", Toast.LENGTH_LONG).show();
-//
-//                        } catch (JSONException e) {
-//
-//                        }
                         return true;
                 }
                 return false;

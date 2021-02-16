@@ -40,7 +40,7 @@
                 app:srcCompat="@drawable/avatar_icon" />
 
             <EditText
-                android:id="@+id/nameID"
+                android:id="@+id/profileNameID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profileAvatarID"
@@ -55,10 +55,10 @@
                 tools:layout_editor_absoluteY="121dp" />
 
             <EditText
-                android:id="@+id/surnameID"
+                android:id="@+id/profileSurnameID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/nameID"
+                android:layout_below="@+id/profileNameID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
                 android:hint="@string/hint_cognome"
@@ -71,10 +71,10 @@
                 tools:layout_editor_absoluteY="166dp" />
 
             <EditText
-                android:id="@+id/usernameID"
+                android:id="@+id/profileUsernameID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/surnameID"
+                android:layout_below="@+id/profileSurnameID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
                 android:hint="@string/hint_username"
@@ -85,10 +85,10 @@
                 tools:layout_editor_absoluteY="211dp" />
 
             <EditText
-                android:id="@+id/emailID"
+                android:id="@+id/profileEmailID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/usernameID"
+                android:layout_below="@+id/profileUsernameID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
                 android:hint="@string/hint_email"
@@ -99,10 +99,10 @@
                 tools:layout_editor_absoluteY="256dp" />
 
             <EditText
-                android:id="@+id/passwordID"
+                android:id="@+id/profilePasswordID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/emailID"
+                android:layout_below="@+id/profileEmailID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
                 android:hint="@string/hint_password"
@@ -113,10 +113,10 @@
                 tools:layout_editor_absoluteY="301dp" />
 
             <EditText
-                android:id="@+id/confirmPasswordID"
+                android:id="@+id/profileConfirmPasswordID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/passwordID"
+                android:layout_below="@+id/profilePasswordID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
                 android:hint="@string/hint_confirm_password"
@@ -127,10 +127,10 @@
                 tools:layout_editor_absoluteY="346dp" />
 
             <EditText
-                android:id="@+id/bioID"
+                android:id="@+id/profileBioID"
                 android:layout_width="match_parent"
                 android:layout_height="68dp"
-                android:layout_below="@+id/confirmPasswordID"
+                android:layout_below="@+id/profileConfirmPasswordID"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="15dp"
@@ -142,6 +142,17 @@
                 tools:layout_conversion_absoluteWidth="372dp"
                 tools:layout_editor_absoluteX="20dp"
                 tools:layout_editor_absoluteY="391dp" />
+
+            <ImageView
+                android:id="@+id/logoutButtonID"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:onClick="onClickLogout"
+                app:srcCompat="@drawable/logout_grey" />
 
         </RelativeLayout>
 
