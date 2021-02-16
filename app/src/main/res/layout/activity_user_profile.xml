@@ -77,7 +77,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="56dp"
+                        android:layout_marginTop="63dp"
                         android:layout_marginRight="10dp"
                         android:text="Studente di informatica" />
 
@@ -88,7 +88,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="18dp"
                         android:text="Davide Russo" />
 
                     <TextView
@@ -99,26 +99,10 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="33dp"
+                        android:layout_marginTop="41dp"
                         android:layout_marginRight="10dp"
                         android:text="daviderusso98"
                         android:textStyle="bold" />
-
-                    <RatingBar
-                        android:id="@+id/ratingBarID"
-
-                        style="@style/Widget.AppCompat.RatingBar.Small"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="79dp"
-                        android:layout_marginBottom="11dp"
-                        android:numStars="5" />
 
                     <ImageView
                         android:id="@+id/settingsButtonID"

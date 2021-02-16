@@ -1,9 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_color"
     tools:context=".UserSettings">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewID"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:maxHeight="100dp"
+        app:cardBackgroundColor="@color/cardBackgroundColor"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/registrationButtonID"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/profileAvatarID"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/avatar_icon" />
+
+            <EditText
+                android:id="@+id/nameID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profileAvatarID"
+                android:layout_marginTop="1dp"
+                android:ems="10"
+                android:hint="@string/hint_nome"
+                android:inputType="textPersonName"
+                android:textColorHint="@android:color/darker_gray"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+            <EditText
+                android:id="@+id/surnameID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameID"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="@string/hint_cognome"
+                android:inputType="textPersonName"
+                android:selectAllOnFocus="false"
+                android:singleLine="false"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="166dp" />
+
+            <EditText
+                android:id="@+id/usernameID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/surnameID"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="@string/hint_username"
+                android:inputType="textPersonName"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="211dp" />
+
+            <EditText
+                android:id="@+id/emailID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/usernameID"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="256dp" />
+
+            <EditText
+                android:id="@+id/passwordID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/emailID"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="301dp" />
+
+            <EditText
+                android:id="@+id/confirmPasswordID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/passwordID"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="@string/hint_confirm_password"
+                android:inputType="textPassword"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="346dp" />
+
+            <EditText
+                android:id="@+id/bioID"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_below="@+id/confirmPasswordID"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="15dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/hint_bio"
+                android:inputType="textMultiLine"
+                tools:layout_conversion_absoluteHeight="104dp"
+                tools:layout_conversion_absoluteWidth="372dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="391dp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/registrationButtonID"
+        android:layout_width="259dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/custom_button"
+        android:text="@string/conferma"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewID"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

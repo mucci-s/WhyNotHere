@@ -669,6 +669,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
     public void goToUserProfile(){
         Intent goToUserProfileIntent = new Intent(this, UserProfileActivity.class);
+        goToUserProfileIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToUserProfileIntent);
     }
 
