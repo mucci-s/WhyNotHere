@@ -20,7 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhyNotHere">
         <activity android:name=".ViewPlaceActivity"></activity>
-        <activity android:name=".NewPlaceActivity" />
+        <activity android:name=".NewPlaceActivity"
+                  android:windowSoftInputMode="adjustPan"/>
+
+
         <activity android:name=".UserProfileActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

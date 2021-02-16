@@ -177,6 +177,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                     case R.id.addplace:
 
                         Intent goToUserProfileIntent = new Intent(MapsHomeActivity.this, NewPlaceActivity.class);
+                        goToUserProfileIntent.putExtra("userLogged", userLogged);
                         startActivity(goToUserProfileIntent);
 
 //                        SharedPreferences userLoggedPreferences = getSharedPreferences("session", MODE_PRIVATE);

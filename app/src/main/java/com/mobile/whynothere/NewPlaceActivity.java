@@ -92,6 +92,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     private EditText description;
     GridView gridView;
 
+    private String userLogged;
+    private String userID;
+
     ArrayList<Integer> defaultImages = new ArrayList<>(Arrays.asList(
             R.drawable.default_icon_place, R.drawable.default_icon_place, R.drawable.default_icon_place, R.drawable.default_icon_place
     ));
@@ -102,6 +105,16 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userLogged = getIntent().getStringExtra("userLogged");
+
+        try {
+            JSONObject userObject = new JSONObject(userLogged);
+            userID = userObject.getString("_id");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -382,23 +395,24 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         try {
 
             jsonBody = new JSONObject(
-                    "{\"title\":\"" + title + "\"," +
-                            "\"author\":\"" + "5ff0e3e123ac730004c39f84" + "\"," +
-                            "\"name\":\"" + description + "\"," +
-                            "\"location\":\" {\"coordinates\": { " + lastKnownLocation.getLongitude() + "," + lastKnownLocation.getLatitude() + "}, \"type\": \"Point\"} "+ "\"}");
+                    "{\"title\":\"" + title.getText().toString() + "\"," +
+                            "\"author\":\"" + userID + "\"," +
+                            "\"name\":\"" + description.getText().toString() + "\"," +
+                            "\"location\": {\"coordinates\": [ " + lastKnownLocation.getLongitude() + "," + lastKnownLocation.getLatitude() + "], \"type\": \"Point\"} }");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        final String url = "https://whynothere-app.herokuapp.com/user/createpost";
+        final String url = "https://whynothere-app.herokuapp.com/post/createpost";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
-                //GO TO HOME
+
+                //GO TO vaffanculo
             }
 
         }, new Response.ErrorListener() {
