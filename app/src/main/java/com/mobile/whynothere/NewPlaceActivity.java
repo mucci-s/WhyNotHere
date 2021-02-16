@@ -398,7 +398,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                     "{\"title\":\"" + title.getText().toString() + "\"," +
                             "\"author\":\"" + userID + "\"," +
                             "\"name\":\"" + description.getText().toString() + "\"," +
-                            "\"location\": {\"coordinates\": [ " + lastKnownLocation.getLongitude() + "," + lastKnownLocation.getLatitude() + "], \"type\": \"Point\"} }");
+                            "\"location\": {\"coordinates\": [ " + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude() + "], \"type\": \"Point\"} }");
 
         } catch (JSONException e) {
             e.printStackTrace();
