@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -31,11 +32,15 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView username;
     private TextView bio;
     private RatingBar ratingBar;
+    private ImageView settingsButton;
     private ImageView spottedPlacesButton;
     private ImageView likedPlacesButton;
-    private BottomNavigationView navigationBar;
+
+    private boolean settingsButtonPressed = false;
     private boolean spottedPlacesPressed = true;
     private boolean likedPlacesPressed = false;
+
+    private BottomNavigationView navigationBar;
 
     UserPhotoFragment userPhotoFragment;
     UserLikedPhotoFragment userLikedPhotoFragment;
@@ -52,6 +57,7 @@ public class UserProfileActivity extends AppCompatActivity {
         username = (TextView) this.findViewById(R.id.profileUsernameID);
         bio = (TextView) this.findViewById(R.id.profileBioID);
         ratingBar = (RatingBar) this.findViewById(R.id.ratingBarID);
+        settingsButton = (ImageView) this.findViewById(R.id.settingsButtonID);
         spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
         likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
         navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
@@ -126,9 +132,23 @@ public class UserProfileActivity extends AppCompatActivity {
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userLikedPhotoFragment).commit();
     }
 
+    public void onClickSettings(View view) {
+        this.settingsButtonPressed = true;
+        this.settingsButton.setImageResource(R.drawable.settings_blue);
+        this.settingsButton.setMaxHeight(2);
+        this.settingsButton.setMaxWidth(2);
+
+        this.goToSettings();
+    }
+
     public void goToHome() {
         Intent goToHomeIntent = new Intent(this, MapsHomeActivity.class);
         this.startActivity(goToHomeIntent);
+    }
+
+    public void goToSettings() {
+        Intent goToSettingsIntent = new Intent(this, UserSettings.class);
+        this.startActivity(goToSettingsIntent);
     }
 
 }

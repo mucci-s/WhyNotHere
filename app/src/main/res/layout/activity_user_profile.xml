@@ -118,18 +118,24 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="79dp"
                         android:layout_marginBottom="11dp"
-                        android:numStars="3" />
+                        android:numStars="5" />
 
-                    <Button
+                    <ImageView
                         android:id="@+id/settingsButtonID"
+
                         android:layout_width="22dp"
                         android:layout_height="30dp"
+
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="10dp"
+
+                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
+
                         android:background="#00FFFFFF"
                         android:backgroundTint="#00FFFFFF"
-                        android:drawableStart="@drawable/ic_baseline_settings_24" />
+                        android:onClick="onClickSettings"
+                        app:srcCompat="@drawable/settings_grey" />
 
                 </RelativeLayout>
 
@@ -190,9 +196,7 @@
 
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="38dp">
-
-            </FrameLayout>
+                android:layout_marginTop="38dp"/>
 
         </RelativeLayout>
 
