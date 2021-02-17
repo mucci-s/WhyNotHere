@@ -84,15 +84,16 @@
                 tools:layout_editor_absoluteX="20dp"
                 tools:layout_editor_absoluteY="211dp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/profileEmailID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profileUsernameID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress"
+                android:textAlignment="textStart"
+                android:textColor="#000000"
+                android:textSize="18sp"
                 tools:layout_conversion_absoluteHeight="45dp"
                 tools:layout_conversion_absoluteWidth="372dp"
                 tools:layout_editor_absoluteX="20dp"
@@ -145,8 +146,8 @@
 
             <ImageView
                 android:id="@+id/logoutButtonID"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp"
@@ -164,6 +165,7 @@
         android:layout_height="51dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/custom_button"
+        android:onClick="onClickConfirm"
         android:text="@string/conferma"
         android:textColor="#FFFFFF"
         android:textSize="16sp"

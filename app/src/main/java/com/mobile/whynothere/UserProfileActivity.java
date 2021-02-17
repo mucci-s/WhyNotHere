@@ -5,15 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,8 +18,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.gson.JsonObject;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.fragments.userview.UserLikedPhotoFragment;
 import com.mobile.whynothere.fragments.userview.UserPhotoFragment;
@@ -36,10 +30,10 @@ public class UserProfileActivity extends AppCompatActivity {
     //this.spottedPlacesButton.setMaxHeight(20); Problemi con icon
     //this.spottedPlacesButton.setMaxWidth(20);
 
-    private CircularImageView avatar;
-    private TextView nameSurname;
-    private TextView username;
-    private TextView bio;
+    private CircularImageView avatarView;
+    private TextView nameSurnameView;
+    private TextView usernameView;
+    private TextView bioView;
     private ImageView settingsButton;
     private ImageView spottedPlacesButton;
     private ImageView likedPlacesButton;
@@ -77,10 +71,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
         this.getUserData(userId);  //Se lo metto dopo è meglio?
 
-        this.avatar = (CircularImageView) this.findViewById(R.id.profileAvatarID);
-        this.nameSurname = (TextView) this.findViewById(R.id.profileNameSurnameID);
-        this.username = (TextView) this.findViewById(R.id.profileUsernameID);
-        this.bio = (TextView) this.findViewById(R.id.profileBioID);
+        this.avatarView = (CircularImageView) this.findViewById(R.id.profileAvatarID);
+        this.nameSurnameView = (TextView) this.findViewById(R.id.profileNameSurnameID);
+        this.usernameView = (TextView) this.findViewById(R.id.profileUsernameID);
+        this.bioView = (TextView) this.findViewById(R.id.profileBioID);
         this.settingsButton = (ImageView) this.findViewById(R.id.settingsButtonID);
         this.spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
         this.likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
@@ -115,9 +109,67 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        this.userLogged = getIntent().getStringExtra("userLogged");
+
+        try {
+            JSONObject userObject = new JSONObject(userLogged);
+            userId = userObject.getString("_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
         this.navigationBar.setSelectedItemId(R.id.profile);
 
+        this.getUserData(this.userId);
+
         this.settingsButton.setImageResource(R.drawable.settings_grey);
+    }
+
+    public void getUserData(String userId) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"_id\":" + userId + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject user = response.getJSONObject("user");
+
+                    userName = user.getString("name");
+                    userSurname = user.getString("surname");
+                    nameSurnameView.setText(userName + " " + userSurname);
+
+                    userUsername = user.getString("username");
+                    usernameView.setText(userUsername);
+
+                    userBio = user.getString("bio");
+                    bioView.setText(userBio);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
     }
 
     public void onClickNearlyButton(View view) {
@@ -170,52 +222,6 @@ public class UserProfileActivity extends AppCompatActivity {
         Intent goToSettingsIntent = new Intent(this, UserSettings.class);
         goToSettingsIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToSettingsIntent);
-    }
-
-    public void getUserData(String userId) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JSONObject jsonBody = null;
-
-        try {
-            jsonBody = new JSONObject("{\"_id\":" + userId + "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-
-                try {
-                    JSONObject user = response.getJSONObject("user");
-
-                    userName = user.getString("name");
-                    userSurname = user.getString("surname");
-                    nameSurname.setText(userName + " " + userSurname);
-
-                    userUsername = user.getString("username");
-                    username.setText(userUsername);
-
-                    userBio = user.getString("bio");
-                    bio.setText(userBio);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        requestQueue.add(jsonObjectRequest);
-
     }
 
 }
