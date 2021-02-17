@@ -19,7 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhyNotHere">
-        <activity android:name=".ViewPlaceActivity"></activity>
+        <activity android:name=".ViewPlaceActivity"
+            android:windowSoftInputMode="adjustPan">
+            </activity>
         <activity
             android:name=".NewPlaceActivity"
             android:windowSoftInputMode="adjustPan" />

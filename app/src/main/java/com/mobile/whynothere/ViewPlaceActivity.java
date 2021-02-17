@@ -17,6 +17,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mobile.whynothere.models.Comment;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
 import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
+import com.mobile.whynothere.utility.adapters.DefaultImageAdaptorComment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,6 +88,11 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private String nameAuthor;
     GridView gridView;
 
+    private ImageView userLoggedImage;
+    private TextView textUserLogged;
+    private TextView commentUserLogged;
+
+    GridView gridView1;
 
 
     @Override
@@ -98,6 +105,10 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         this.title = findViewById(R.id.titleID);
         this.description = findViewById(R.id.descriptionID);
         this.author = findViewById(R.id.authorID);
+
+        this.userLoggedImage = findViewById(R.id.profileAvatarID);
+        this.textUserLogged = findViewById(R.id.authorID);
+        this.commentUserLogged = findViewById(R.id.commentID);
 
       //  this.title.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
       //  this.title.setSingleLine(false);
@@ -216,14 +227,20 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
     private List<Comment> getListData() {
         List<Comment> list = new ArrayList<Comment>();
-        Comment prova1 = new Comment("Peppino", "Bellissimo posto", R.drawable.avatar_icon, defaultImages);
-        Comment prova2 = new Comment("Carlo", "Stancante arrivarci.", R.drawable.avatar_icon, defaultImages);
-        Comment prova3 = new Comment("Antonio", "Consiglio, da ritornarci.", R.drawable.avatar_icon, defaultImages);
+        Comment prova1 = new Comment("Peppino", "Bellissimo posto", R.drawable.avatar_icon);
+        Comment prova2 = new Comment("Carlo", "Stancante arrivarci.", R.drawable.avatar_icon);
+        Comment prova3 = new Comment("Antonio", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
 
         list.add(prova1);
         list.add(prova2);
         list.add(prova3);
         return list;
+    }
+
+    public void setDefaultImagesUserLoggedComment(GridView gridView) {
+        DefaultImageAdaptorComment defaultImageAdaptorComment = new DefaultImageAdaptorComment(defaultImages, this);
+        gridView.setAdapter(defaultImageAdaptorComment);
+        gridView.setEnabled(false);
     }
 
     public void setDefaultImages(GridView gridView) {

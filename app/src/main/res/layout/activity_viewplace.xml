@@ -14,21 +14,19 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewID"
-        android:singleLine="false"
         android:layout_width="match_parent"
-        android:layout_height="442dp"
+        android:layout_height="448dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="265dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="24dp"
+        android:singleLine="false"
         app:cardBackgroundColor="@color/cardBackgroundColor"
         app:cardCornerRadius="25dp"
         app:cardElevation="15dp"
@@ -41,7 +39,7 @@
         <LinearLayout
             android:id="@+id/formLayout"
             android:layout_width="match_parent"
-            android:layout_height="378dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -60,10 +58,10 @@
                         android:layout_height="56dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
-                       android:layout_marginLeft="14dp"
+                        android:layout_marginLeft="7dp"
                         android:layout_marginTop="5dp"
 
-                        tools:srcCompat="@tools:sample/avatars" />
+                        android:src="@drawable/avatar_icon" />
 
                     <TextView
                         android:id="@+id/authorID"
@@ -84,9 +82,9 @@
 
                     <TextView
                         android:id="@+id/titleID"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
 
                         android:drawableStart="@drawable/ic_place"
                         android:drawableLeft="@drawable/ic_place"
@@ -109,14 +107,15 @@
 
                     <TextView
                         android:id="@+id/descriptionID"
-                        android:layout_width="272dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_description"
                         android:drawableLeft="@drawable/ic_description"
                         android:drawablePadding="12dp"
                         android:hint="@string/descriptionExample"
                         android:maxLines="4"
-
+                        android:layout_marginTop="13dp"
+                        android:gravity="center_vertical"
                         android:paddingLeft="10dp"
                         android:paddingEnd="12dp"
                         android:paddingRight="12dp"
@@ -166,15 +165,60 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/avatUserLogged"
+                    android:layout_width="55dp"
+                    android:layout_height="54dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/avatar_icon" />
+
+                <EditText
+                    android:layout_marginTop="7dp"
+                    android:id="@+id/commentID"
+                    android:layout_width="337dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="3dp"
+                    android:background="@drawable/custom_input_2"
+                    android:drawableStart="@drawable/custom_insert_comment"
+                    android:drawableLeft="@drawable/custom_insert_comment"
+                    android:drawablePadding="12dp"
+                    android:hint="Aggiungi un commento"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingRight="12dp"
+                    android:singleLine="false"
+                    android:textColor="#024064"
+                    android:textColorHighlight="#8BC34A"
+                    android:textColorLink="#8BC34A"
+                    android:textCursorDrawable="@drawable/background_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    tools:ignore="InvalidId">
+
+                </EditText>
+
+
+            </LinearLayout>
+
             <ListView
                 android:id="@+id/lista"
                 android:layout_width="match_parent"
-                android:layout_height="111dp"
-                android:layout_marginLeft="10dp"
+                android:layout_height="146dp"
+                android:layout_marginTop="6dp"
+                android:divider="@null"
+                android:dividerHeight="5dp"
+                android:footerDividersEnabled="false"
+                android:headerDividersEnabled="false"
+                android:scrollbars="none"
                 tools:layout_editor_absoluteX="10dp"
                 tools:layout_editor_absoluteY="12dp" />
+
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
-
 </RelativeLayout>

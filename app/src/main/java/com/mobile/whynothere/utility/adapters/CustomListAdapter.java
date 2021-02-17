@@ -44,7 +44,7 @@ public class CustomListAdapter  extends BaseAdapter {
             holder.authorImageView = view.findViewById(R.id.profileAvatarID);
             holder.authorNameView = view.findViewById(R.id.authorID);
             holder.commentTextView = view.findViewById(R.id.commentID);
-            holder.albumView = view.findViewById(R.id.imageGrid);
+
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -54,7 +54,6 @@ public class CustomListAdapter  extends BaseAdapter {
         holder.authorNameView.setText(comment.getAuthor());
         holder.commentTextView.setText(comment.getComment());
         holder.authorImageView.setImageResource(comment.getPhotoProfile());
-        holder.albumView.setAdapter(new DefaultImageAdaptorComment(comment.getImages(), this.context));
         return view;
     }
 
@@ -62,6 +61,5 @@ public class CustomListAdapter  extends BaseAdapter {
         CircularImageView authorImageView;
         TextView authorNameView;
         TextView commentTextView;
-        GridView albumView;
     }
 }

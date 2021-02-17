@@ -41,7 +41,7 @@ public class DefaultImageAdaptorComment extends BaseAdapter {
 
         if(imageView == null){
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(100,70));
+            imageView.setLayoutParams(new GridView.LayoutParams(80,70));
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         }
 
