@@ -94,7 +94,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     private String userLogged;
     private String userID;
-
+    private String placeID = "602c58e747c1bc00046f55b0";
     ArrayList<Integer> defaultImages = new ArrayList<>(Arrays.asList(
             R.drawable.default_icon_place, R.drawable.default_icon_place, R.drawable.default_icon_place, R.drawable.default_icon_place
     ));
@@ -104,8 +104,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+       super.onCreate(savedInstanceState);
         userLogged = getIntent().getStringExtra("userLogged");
 
         try {
@@ -173,6 +172,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     public void onClickViewPlace(View view) {
         Intent goToViewPlace = new Intent(this, ViewPlaceActivity.class);
+        goToViewPlace.putExtra("placeId",placeID);
         this.startActivity(goToViewPlace);
     }
 
@@ -183,9 +183,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             outState.putParcelable(KEY_LOCATION, lastKnownLocation);
         }
         super.onSaveInstanceState(outState);
-
-
     }
+
+
 
     public void setDefaultImages(GridView gridView) {
         DefaultImageAdaptor defaultImageAdaptor = new DefaultImageAdaptor(defaultImages, this);
@@ -384,8 +384,11 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             }
         }, 500);
 
+        title.getText().clear();
+        description.getText().clear();
 
     }
+
 
     public void insertPlace() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -411,8 +414,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onResponse(JSONObject response) {
                 Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
-
-                //GO TO vaffanculo
+                Intent goToHome = new Intent(getBaseContext(),MapsHomeActivity.class);
+                startActivity(goToHome);
             }
 
         }, new Response.ErrorListener() {
@@ -420,6 +423,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+
             }
 
         });

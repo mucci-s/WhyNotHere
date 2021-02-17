@@ -12,12 +12,21 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.renderscript.ScriptGroup;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +39,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mobile.whynothere.models.Comment;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
 import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +63,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private static final String TAG = NewPlaceActivity.class.getSimpleName();
     private int CURSOR_IMAGES = 0;
 
-    private final LatLng placeLocation = new LatLng(-33.8523341, 151.2106085);
+
+
     private static final int GALLERY_REQUEST = 9;
     //Initialize variable
     GoogleMap googleMap;
@@ -59,16 +72,35 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
 
-    private Location lastKnownLocation;
-
+    private LatLng placeLatLng;
+    private Location placeLocation;
     private LinearLayout formLayout;
+    private TextView author;
+    private TextView title;
+    private TextView description;
 
+    private String placeID;
+    private String titlePlace;
+    private String descriptionPlace;
+    private String authorID;
+    private String nameAuthor;
     GridView gridView;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewplace);
+
+        placeID = getIntent().getStringExtra("placeId");
+        getPlace(placeID);
+        this.title = findViewById(R.id.titleID);
+        this.description = findViewById(R.id.descriptionID);
+        this.author = findViewById(R.id.authorID);
+
+      //  this.title.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+      //  this.title.setSingleLine(false);
 
         gridView = findViewById(R.id.imageGrid);
         setDefaultImages(gridView);
@@ -88,6 +120,99 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         ListView listView = findViewById(R.id.lista);
         listView.setAdapter(new CustomListAdapter(comments, this));
     }
+
+    private void getPlace(String placeID) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        System.out.println("L'id e' = " + placeID);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"_id\":" + placeID + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/post/getpostbyid";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject place = response.getJSONObject("post");
+                    System.out.println("IL POSTO E' " + place.toString());
+
+                    titlePlace = place.getString("title");
+                    descriptionPlace = place.getString("description");
+                    authorID = place.getString("author");
+
+                    placeLatLng = new LatLng(place.getJSONObject("location").getJSONArray("coordinates").getDouble(0),place.getJSONObject("location").getJSONArray("coordinates").getDouble(1));
+
+                    getPlaceLocation();
+
+                    title.setText(titlePlace);
+                    description.setText(descriptionPlace);
+
+                    getAuthor(authorID);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+    private void getAuthor(String authorId){
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"_id\":" + authorId + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject user = response.getJSONObject("user");
+                    nameAuthor = user.getString("name");
+                    author.setText(nameAuthor);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+
+
 
     private List<Comment> getListData() {
         List<Comment> list = new ArrayList<Comment>();
@@ -146,7 +271,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         client = LocationServices.getFusedLocationProviderClient(this);
 
         updateLocationUI();
-        getPlaceLocation();
+        //getPlaceLocation();
     }
 
     private void updateLocationUI() {
@@ -181,10 +306,12 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void getPlaceLocation() {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, DEFAULT_ZOOM));
 
-        MarkerOptions options = new MarkerOptions().position(placeLocation)
-                .title("Il posto è qui");
+        LatLng location = placeLatLng;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM));
+
+        MarkerOptions options = new MarkerOptions().position(location)
+                .title(titlePlace);
 
         googleMap.addMarker(options);
     }
