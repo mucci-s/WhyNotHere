@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,6 +46,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private BottomNavigationView navigationBar;
 
     private String userLogged;
+    private String userPassedId = "602a546a74155400046b68fd";
 
     private String userName;
     private String userSurname;
@@ -60,7 +63,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        this.userLogged = getIntent().getStringExtra("userLogged");
+       /* this.userLogged = getIntent().getStringExtra("userLogged");
 
         try {
             JSONObject userObject = new JSONObject(userLogged);
@@ -68,8 +71,10 @@ public class UserProfileActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+*/
 
-        this.getUserData(userId);  //Se lo metto dopo è meglio?
+        this.getUserId();
+        this.getUserData(userId);
 
         this.avatarView = (CircularImageView) this.findViewById(R.id.profileAvatarID);
         this.nameSurnameView = (TextView) this.findViewById(R.id.profileNameSurnameID);
@@ -109,21 +114,26 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        this.userLogged = getIntent().getStringExtra("userLogged");
-
-        try {
-            JSONObject userObject = new JSONObject(userLogged);
-            userId = userObject.getString("_id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        this.getUserId();
+        this.getUserData(this.userId);
 
         this.navigationBar.setSelectedItemId(R.id.profile);
 
-        this.getUserData(this.userId);
+        if(!this.userId.equals(this.userPassedId)){
+            this.settingsButton.setVisibility(View.INVISIBLE);
+        }
 
         this.settingsButton.setImageResource(R.drawable.settings_grey);
+    }
+
+    public void getUserId(){
+        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+        try {
+            JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
+            this.userId = userLogged.getString("_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getUserData(String userId) {
@@ -137,7 +147,6 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
 
             @Override

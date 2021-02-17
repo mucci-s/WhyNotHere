@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);             //.getstring(_id)
         setContentView(R.layout.activity_login);
         SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
         try {

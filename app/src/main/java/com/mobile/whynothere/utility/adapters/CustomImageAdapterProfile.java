@@ -41,7 +41,7 @@ public class CustomImageAdapterProfile extends BaseAdapter {
 
         if(imageView == null){
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(400,400));
+            imageView.setLayoutParams(new GridView.LayoutParams(300,300));
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
 

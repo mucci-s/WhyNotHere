@@ -52,15 +52,15 @@ public class UserSettings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
 
-        this.userLogged = getIntent().getStringExtra("userLogged");
+       /* this.userLogged = getIntent().getStringExtra("userLogged");
 
         try {
             JSONObject userObject = new JSONObject(userLogged);
             userId = userObject.getString("_id");
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-
+        }*/
+        this.getUserId();
         this.getUserData(userId);
 
         this.avatarView = (CircularImageView) this.findViewById(R.id.profileAvatarID);
@@ -72,6 +72,25 @@ public class UserSettings extends AppCompatActivity {
         this.confirmPasswordView = (EditText) this.findViewById(R.id.profileConfirmPasswordID);
         this.bioView = (EditText) this.findViewById(R.id.profileBioID);
         this.logoutButton = (ImageView) this.findViewById(R.id.logoutButtonID);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.getUserId();
+        this.getUserData(this.userId);
+    }
+
+
+    public void getUserId(){
+        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+        try {
+            JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
+            this.userId = userLogged.getString("_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getUserData(String userId) {
@@ -183,9 +202,6 @@ public class UserSettings extends AppCompatActivity {
     }
 
     public boolean checkField() {
-
-        //Mi dichiaro questi campi per avere gli IF più corti
-
         String name = this.nameView.getText().toString();
         String surname = this.surnameView.getText().toString();
         String username = this.usernameView.getText().toString();
@@ -205,7 +221,6 @@ public class UserSettings extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
-
     }
 
     public void checkUsername() {
