@@ -48,7 +48,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        avatar = (CircularImageView) this.findViewById(R.id.profileAvatarID);
+        avatar = (CircularImageView) this.findViewById(R.id.listProfileAvatarID);
         name = (EditText) this.findViewById(R.id.nameID);
         surname = (EditText) this.findViewById(R.id.surnameID);
         username = (EditText) this.findViewById(R.id.usernameID);

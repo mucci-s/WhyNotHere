@@ -137,8 +137,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         cancelButton = this.findViewById(R.id.cancelPlaceButtonID);
         confirmButton = this.findViewById(R.id.confirmPlaceButtonID);
         formLayout = this.findViewById(R.id.formLayout);
-        title = this.findViewById(R.id.titleID);
-        description = this.findViewById(R.id.descriptionID);
+        title = this.findViewById(R.id.listAuthorCommentID);
+        description = this.findViewById(R.id.listCommentID);
 
         viewPlace = this.findViewById(R.id.button);
         formLayout.setOnClickListener(null);

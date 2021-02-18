@@ -8,12 +8,15 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PersistableBundle;
-import android.renderscript.ScriptGroup;
-import android.text.InputType;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -37,6 +40,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.models.Comment;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
 import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
@@ -45,6 +49,9 @@ import com.mobile.whynothere.utility.adapters.DefaultImageAdaptorComment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,11 +95,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private String nameAuthor;
     GridView gridView;
 
-    private ImageView userLoggedImage;
-    private TextView textUserLogged;
-    private TextView commentUserLogged;
 
-    GridView gridView1;
+    private CircularImageView imageAuthor, userLoggedImage;
 
 
     @Override
@@ -102,16 +106,14 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
         placeID = getIntent().getStringExtra("placeId");
         getPlace(placeID);
-        this.title = findViewById(R.id.titleID);
-        this.description = findViewById(R.id.descriptionID);
-        this.author = findViewById(R.id.authorID);
 
-        this.userLoggedImage = findViewById(R.id.profileAvatarID);
-        this.textUserLogged = findViewById(R.id.authorID);
-        this.commentUserLogged = findViewById(R.id.commentID);
+        this.imageAuthor = findViewById(R.id.placeAuthorProfileAvatarID);
+        this.title = findViewById(R.id.placeTitleID);
+        this.description = findViewById(R.id.placeDescriptionID);
+        this.author = findViewById(R.id.placeAuthorID);
+        this.userLoggedImage = findViewById(R.id.avatarUserLogged);
 
-      //  this.title.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-      //  this.title.setSingleLine(false);
+        setFotoDavide();
 
         gridView = findViewById(R.id.imageGrid);
         setDefaultImages(gridView);
@@ -130,6 +132,28 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         List<Comment> comments = getListData();
         ListView listView = findViewById(R.id.lista);
         listView.setAdapter(new CustomListAdapter(comments, this));
+    }
+    private void setFotoDavide(){
+        URL url = null;
+        URL url2 = null;
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            url = new URL("https://instagram.fcia2-1.fna.fbcdn.net/v/t51.2885-19/s320x320/119672999_449071479377091_6700639640968533977_n.jpg?_nc_ht=instagram.fcia2-1.fna.fbcdn.net&_nc_ohc=1soJCsVgJKkAX-Qg5-9&tp=1&oh=dc6741a9184ea11651c695b5954e7a28&oe=60567A7B");
+            url2 = new URL("https://instagram.fcia2-1.fna.fbcdn.net/v/t51.2885-19/s320x320/121218074_1083846702059572_8582352636631822576_n.jpg?_nc_ht=instagram.fcia2-1.fna.fbcdn.net&_nc_ohc=_hGUpK2WXBYAX9BjkbD&tp=1&oh=2640a217b45b82e273b299aa21120358&oe=6055645A");
+
+            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            imageAuthor.setImageBitmap(bmp);
+
+            Bitmap bmp1 = BitmapFactory.decodeStream(url2.openConnection().getInputStream());
+            userLoggedImage.setImageBitmap(bmp1);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getPlace(String placeID) {
@@ -159,6 +183,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                     authorID = place.getString("author");
 
                     placeLatLng = new LatLng(place.getJSONObject("location").getJSONArray("coordinates").getDouble(0),place.getJSONObject("location").getJSONArray("coordinates").getDouble(1));
+
 
                     getPlaceLocation();
 
@@ -227,13 +252,23 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
     private List<Comment> getListData() {
         List<Comment> list = new ArrayList<Comment>();
-        Comment prova1 = new Comment("Peppino", "Bellissimo posto", R.drawable.avatar_icon);
+        Comment prova1 = new Comment("Peppino", "Bellissimo posto Bellissimo posto BELLO BELLO BELLO BELLO BELLO BELLO BELLO BELLO", R.drawable.avatar_icon);
         Comment prova2 = new Comment("Carlo", "Stancante arrivarci.", R.drawable.avatar_icon);
         Comment prova3 = new Comment("Antonio", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
+        Comment prova4 = new Comment("Antonino", "Consiglio, da ritornarciTOPTTOPTOTP.", R.drawable.avatar_icon);
+        Comment prova5 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
+        Comment prova6 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
+        Comment prova7 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
+        Comment prova8 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
 
         list.add(prova1);
         list.add(prova2);
         list.add(prova3);
+        list.add(prova4);
+        list.add(prova5);
+        list.add(prova6);
+        list.add(prova7);
+        list.add(prova8);
         return list;
     }
 
@@ -325,11 +360,21 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private void getPlaceLocation() {
 
         LatLng location = placeLatLng;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM));
 
-        MarkerOptions options = new MarkerOptions().position(location)
-                .title(titlePlace);
+        final Handler handler = new Handler(Looper.getMainLooper());
 
-        googleMap.addMarker(options);
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM));
+                MarkerOptions options = new MarkerOptions().position(location)
+                        .title(titlePlace);
+
+                googleMap.addMarker(options);
+            }
+        }, 1000);
+
+
     }
 }
