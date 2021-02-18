@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="Top 3 luoghi nelle vicinanze"
         android:layout_margin="3dp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/colorGreenGradientDark"
         app:layout_constraintBottom_toTopOf="@+id/listview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -24,6 +24,7 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -147,7 +148,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         bottomSheetBehaviorPlaceInfo = BottomSheetBehavior.from(bottomSheetLayoutPlaceInfo);
 
         listViewNearlyPlace = (ListView) bottomSheetLayout.findViewById(R.id.listview);
-
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -155,7 +155,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             }
-
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
@@ -170,14 +169,12 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                         return true;
 
                     case R.id.profile:
-
                         goToUserProfile();
                         return true;
 
                     case R.id.addplace:
 
                         Intent goToUserProfileIntent = new Intent(MapsHomeActivity.this, NewPlaceActivity.class);
-                        goToUserProfileIntent.putExtra("userLogged", userLogged);
                         startActivity(goToUserProfileIntent);
 
                         return true;
@@ -231,7 +228,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
+        this.loadPostsLocation();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
@@ -271,7 +268,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
-        this.loadPostsLocation();
+
 
         //  mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getApplicationContext(), R.raw.map_style));
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -525,7 +522,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         final String url = "https://whynothere-app.herokuapp.com/post/topnearlyplaces";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
@@ -555,6 +551,14 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                         }
                         CustomNearlyPlaceAdapter adapterCustom = new CustomNearlyPlaceAdapter(MapsHomeActivity.this, nearlyPlacesInfo);
                         listViewNearlyPlace.setAdapter(adapterCustom);
+                        listViewNearlyPlace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                CustomNearlyPlaceAdapter selected = ((CustomNearlyPlaceAdapter) parent.getAdapter());
+                                Toast toast = Toast.makeText(getApplicationContext(), selected.getPlaceSelectedID(position), Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        });
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
                     } else {
@@ -567,7 +571,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
 
         });
@@ -601,7 +604,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                 PlaceDataInfoModel placeData;
 
                 try {
-
                     if (response.getJSONArray("posts").length() > 0) {
                         JSONArray lightObject = response.getJSONArray("posts");
                         while (i < response.getJSONArray("posts").length()) {

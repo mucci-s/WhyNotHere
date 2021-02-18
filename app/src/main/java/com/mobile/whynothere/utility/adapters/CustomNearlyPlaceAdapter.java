@@ -26,13 +26,12 @@ public class CustomNearlyPlaceAdapter extends BaseAdapter {
     private List<PlaceDataInfoModel> listData;
     private LayoutInflater layoutInflater;
     private Context context;
-    private String titlePost;
+
 
 
     public CustomNearlyPlaceAdapter(Context acontext, List<PlaceDataInfoModel> listData) {
         this.listData = listData;
         this.context = acontext;
-        this.titlePost = titlePost;
         layoutInflater = LayoutInflater.from(acontext);
     }
 
@@ -51,6 +50,10 @@ public class CustomNearlyPlaceAdapter extends BaseAdapter {
         return position;
     }
 
+    public String getPlaceSelectedID(int position){
+        return listData.get(position).getPlaceID();
+    }
+
 
     @NonNull
     @Override
@@ -58,12 +61,11 @@ public class CustomNearlyPlaceAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.list_item_layout, null);
+            view = layoutInflater.inflate(R.layout.place_info_layout, null);
             holder = new ViewHolder();
             holder.title = view.findViewById(R.id.titleNearID);
             holder.address = view.findViewById(R.id.addressNearID);
             holder.coordinates = view.findViewById(R.id.coordinatesNearID);
-
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -77,7 +79,6 @@ public class CustomNearlyPlaceAdapter extends BaseAdapter {
             Log.e("TAG", "geolocate: IOException: " + e.getMessage() );
         }
         if(locationList.size() > 0){
-
             holder.title.setText(listData.get(position).getTitle());
             holder.address.setText(locationList.get(0).getAddressLine(0));
             holder.coordinates.setText(listData.get(position).getPosition().toString().substring(8));
@@ -91,7 +92,6 @@ public class CustomNearlyPlaceAdapter extends BaseAdapter {
         TextView title;
         TextView address;
         TextView coordinates;
-
     }
 
 }

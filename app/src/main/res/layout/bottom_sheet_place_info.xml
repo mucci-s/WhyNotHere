@@ -31,9 +31,11 @@
             android:src="@drawable/ic_location" />
 
         <LinearLayout
+            android:id="@+id/linearViewMarkerInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="goToPlaceView"
             android:orientation="vertical">
 
             <TextView

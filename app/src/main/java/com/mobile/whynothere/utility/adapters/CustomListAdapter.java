@@ -47,8 +47,8 @@ public class CustomListAdapter  extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.list_comment_layout, null);
             holder = new ViewHolder();
             holder.authorImageView = view.findViewById(R.id.listProfileAvatarID);
-            holder.authorNameView = view.findViewById(R.id.listAuthorCommentID);
-            holder.commentTextView = view.findViewById(R.id.listCommentID);
+            holder.authorNameView = view.findViewById(R.id.titleNewPlaceID);
+            holder.commentTextView = view.findViewById(R.id.descriptionNewPlaceID);
 
             view.setTag(holder);
         } else {

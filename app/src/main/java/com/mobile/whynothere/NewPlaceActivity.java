@@ -5,7 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -13,7 +16,9 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -24,16 +29,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -48,20 +57,26 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
-import com.mobile.whynothere.utility.adapters.ImageAdaptor;
+import com.mobile.whynothere.utility.VolleyMultipartRequest;
+import com.mobile.whynothere.utility.adapters.CustomRecyclerAdaptor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
 
 
 public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -71,7 +86,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private static final String TAG = NewPlaceActivity.class.getSimpleName();
+    private static final int PICK_IMAGE_REQUEST = 1;
     private int CURSOR_IMAGES = 0;
+    private static final String UPLOAD_URL = "https://whynothere-app.herokuapp.com/post/uploadpostimage";
 
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int GALLERY_REQUEST = 9;
@@ -86,34 +103,33 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     private Button viewPlace;
     private Button addPhoto;
     private Button cancelButton;
-    private Button confirmButton;
-    private LinearLayout formLayout;
+    private ImageButton confirmButton;
     private EditText title;
     private EditText description;
-    GridView gridView;
 
-    private String userLogged;
     private String userID;
-    private String placeID = "602c58e747c1bc00046f55b0";
-    ArrayList<Integer> defaultImages = new ArrayList<>(Arrays.asList(
-            R.drawable.default_icon_place, R.drawable.default_icon_place, R.drawable.default_icon_place, R.drawable.default_icon_place
-    ));
+
+    RecyclerView imageRecycler;
+    private Marker positionMarker;
+    private ConstraintLayout imageLayout;
+    private ProgressBar progressBar;
 
     List<Bitmap> images = new ArrayList<>(Arrays.<Bitmap>asList());
     List<Uri> uriImages = new ArrayList<>(Arrays.<Uri>asList());
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        imageLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
-        userLogged = getIntent().getStringExtra("userLogged");
+        super.onCreate(savedInstanceState);
 
-        try {
-            JSONObject userObject = new JSONObject(userLogged);
-            userID = userObject.getString("_id");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        userID = getUserId();
+        setContentView(R.layout.activity_newplace);
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -121,27 +137,20 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        setContentView(R.layout.activity_newplace);
+        title = findViewById(R.id.titleNewPlaceID);
+        description = findViewById(R.id.descriptionNewPlaceID);
 
-        gridView = findViewById(R.id.imageGrid);
-        setDefaultImages(gridView);
+        imageRecycler = findViewById(R.id.list1);
+        addPhoto = findViewById(R.id.button_add_photo);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDialogBox(position);
-            }
-        });
 
-        addPhoto = this.findViewById(R.id.button_add_photo);
-        cancelButton = this.findViewById(R.id.cancelPlaceButtonID);
-        confirmButton = this.findViewById(R.id.confirmPlaceButtonID);
-        formLayout = this.findViewById(R.id.formLayout);
-        title = this.findViewById(R.id.listAuthorCommentID);
-        description = this.findViewById(R.id.listCommentID);
+        LinearLayoutManager manager1 = new LinearLayoutManager(this);
+        manager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        imageRecycler.setLayoutManager(manager1);
+        confirmButton = findViewById(R.id.confirmPlaceButtonID);
+        progressBar = findViewById(R.id.progressBar);
+        imageLayout = findViewById(R.id.imagesLayoutID);
 
-        viewPlace = this.findViewById(R.id.button);
-        formLayout.setOnClickListener(null);
 
         addPhoto.setOnClickListener(new View.OnClickListener() {
 
@@ -162,18 +171,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
-
-
-    }
-
-    public void onClickViewPlace(View view) {
-        Intent goToViewPlace = new Intent(this, ViewPlaceActivity.class);
-        goToViewPlace.putExtra("placeId",placeID);
-        this.startActivity(goToViewPlace);
     }
 
     @Override
@@ -185,39 +185,6 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         super.onSaveInstanceState(outState);
     }
 
-
-
-    public void setDefaultImages(GridView gridView) {
-        DefaultImageAdaptor defaultImageAdaptor = new DefaultImageAdaptor(defaultImages, this);
-        gridView.setAdapter(defaultImageAdaptor);
-        gridView.setEnabled(false);
-    }
-
-    public void showDialogBox(final int image_pos) {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.custom_dialog);
-
-        ImageView Image = dialog.findViewById(R.id.img);
-        Button btn_full = dialog.findViewById(R.id.btn_full);
-        Button btn_close = dialog.findViewById(R.id.btn_close);
-
-        Image.setImageBitmap(images.get(image_pos));
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btn_full.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-
-        dialog.show();
-    }
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -256,7 +223,6 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             //When permission grated
             //Call method
             updateLocationUI();
-
             getDeviceLocation();
         } else {
             //When permission denied
@@ -268,14 +234,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     private void getDeviceLocation() {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         Task<Location> locationResult = client.getLastLocation();
@@ -290,6 +250,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                         LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
                         MarkerOptions options = new MarkerOptions().position(latLng)
                                 .title("Sono qui");
+                        positionMarker = googleMap.addMarker(options);
                         googleMap.addMarker(options);
                     }
                 } else {
@@ -301,29 +262,23 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-    //Open phone gallery
-    private void getImageFromGallery() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setType("image/*");
-        startActivityForResult(intent, GALLERY_REQUEST);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null
+                && (data.getClipData() != null || data.getData() != null)) {
 
             ClipData clipData = data.getClipData();
+            images = new ArrayList<>(Arrays.<Bitmap>asList());
+            CustomRecyclerAdaptor imageAdaptor = new CustomRecyclerAdaptor(this, data);
+            imageRecycler.setAdapter(imageAdaptor);
 
             if (clipData != null) {
                 for (int i = 0; i < clipData.getItemCount(); i++) {
-
                     uriImages.add(clipData.getItemAt(i).getUri());
-
-                    Toast.makeText(getApplicationContext(), "uri imagine  " + clipData.getItemAt(i).getUri(), Toast.LENGTH_LONG).show();
                     try {
                         InputStream is = getContentResolver().openInputStream(uriImages.get(i));
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
@@ -332,12 +287,15 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                         e.printStackTrace();
                     }
                 }
+            } else if (data.getData() != null) {
+                try {
+                    InputStream is = getContentResolver().openInputStream(data.getData());
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    images.add(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
-
-            ImageAdaptor imageAdaptor = new ImageAdaptor(images, this);
-            gridView.setAdapter(imageAdaptor);
-            gridView.setEnabled(true);
-
         }
     }
 
@@ -346,8 +304,6 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 44) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //When permission granted
-                //Call method
                 updateLocationUI();
             }
         }
@@ -355,16 +311,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     private void updateLocationUI() {
         if (googleMap == null) {
-            return;
         } else {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             googleMap.setMyLocationEnabled(true);
@@ -374,60 +323,162 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     public void onClickAddPlace(View view) {
 
-        final Handler handler = new Handler(Looper.getMainLooper());
-
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                insertPlace();
-            }
-        }, 500);
-
-        title.getText().clear();
-        description.getText().clear();
-
+        imageLayout.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        if (images.size() != 0) {
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    insertPlace();
+                }
+            }, 500);
+        } else {
+            Toast.makeText(getApplicationContext(), "INSERIRE FOTO!", Toast.LENGTH_LONG).show();
+        }
     }
 
 
     public void insertPlace() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         JSONObject jsonBody = null;
 
         try {
-
             jsonBody = new JSONObject(
                     "{\"title\":\"" + title.getText().toString() + "\"," +
                             "\"author\":\"" + userID + "\"," +
-                            "\"name\":\"" + description.getText().toString() + "\"," +
-                            "\"location\": {\"coordinates\": [ " + lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude() + "], \"type\": \"Point\"} }");
+                            "\"description\":\"" + description.getText().toString() + "\"," +
+                            "\"location\": {\"coordinates\": [ " + positionMarker.getPosition().latitude + "," + positionMarker.getPosition().longitude + "], \"type\": \"Point\"} }");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         final String url = "https://whynothere-app.herokuapp.com/post/createpost";
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
-                Intent goToHome = new Intent(getBaseContext(),MapsHomeActivity.class);
-                startActivity(goToHome);
-            }
 
+                title.getText().clear();
+                description.getText().clear();
+                Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
+                try {
+                    uploadBitmap(images, images.size(), response.getString("_id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
-
             }
-
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    public String getUserId() {
+        SharedPreferences userPreferences = getSharedPreferences("session", MODE_PRIVATE);
+        try {
+            JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
+            return userLogged.getString("_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void uploadBitmap(final List<Bitmap> data, final int items, String newpostID) {
+//        Uri picUri = null;
+//        CustomRecyclerAdaptor adaptor1 = new CustomRecyclerAdaptor(getApplicationContext(), data);
+//        imageRecycler.setAdapter(adaptor1);
+//        if (data.getClipData() != null) {
+//            picUri = data.getClipData().getItemAt(items - 1).getUri();
+//        } else if (data.getData() != null) {
+//            picUri = data.getData();
+//        }
+//        filePath = getPath(picUri);
+//        try {
+//            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
+//            images.add(bitmap);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        //    Toast.makeText(getApplicationContext(),"Dentro respos" + itemCount, Toast.LENGTH_LONG).show();
+                        //   if (data.getClipData() != null) {
+                        if (items > 1) {
+                            uploadBitmap(data, items - 1, newpostID);
+                        } else {
+                            //mainCategoryRecycler.setAdapter(new CategoryItemRecyclerAdapter(getApplicationContext(),images));
+                            Toast.makeText(getApplicationContext(), "Upload completato", Toast.LENGTH_LONG).show();
+                            Intent goToHome = new Intent(getBaseContext(), MapsHomeActivity.class);
+                            startActivity(goToHome);
+                        }
+//                        } else {
+//
+//                            Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
+//                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("GotError", "" + error.getMessage());
+                    }
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("_id", newpostID);
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(data.get(items - 1))));
+                return params;
+            }
+        };
+        //adding the request to volley
+        Volley.newRequestQueue(NewPlaceActivity.this).add(volleyMultipartRequest);
+
+    }
+
+
+    private byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+
+    private String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
     }
 
 
