@@ -9,12 +9,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,15 +25,21 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mobile.whynothere.utility.VolleyMultipartRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
 
     private CircularImageView avatar;
+    private Bitmap imageSelected;
     private EditText name;
     private EditText surname;
     private EditText username;
@@ -42,6 +51,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextView loginTextView;
 
     private static final int SELECT_AVATAR = 1;
+    private static final String UPLOAD_URL = "https://whynothere-app.herokuapp.com/user/uploaduserphoto";
     Uri imageUri;
 
     @Override
@@ -73,8 +83,8 @@ public class RegistrationActivity extends AppCompatActivity {
         if (requestCode == SELECT_AVATAR && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData();
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                avatar.setImageBitmap(bitmap);
+                imageSelected = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                avatar.setImageBitmap(imageSelected);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -112,6 +122,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 try {
 
                     if (response.getBoolean("userresult")) {
+                        uploadBitmap(imageSelected,response.getJSONObject("userdata").getString("_id"));
                         Toast.makeText(getApplicationContext(), "BENVENUTO!", Toast.LENGTH_LONG).show();
 
                         JSONObject user = response.getJSONObject("userdata");
@@ -191,5 +202,79 @@ public class RegistrationActivity extends AppCompatActivity {
 
         this.goToHome(user);
     }
+
+
+
+    private void uploadBitmap(final Bitmap image, String UserID) {
+//        Uri picUri = null;
+//        CustomRecyclerAdaptor adaptor1 = new CustomRecyclerAdaptor(getApplicationContext(), data);
+//        imageRecycler.setAdapter(adaptor1);
+//        if (data.getClipData() != null) {
+//            picUri = data.getClipData().getItemAt(items - 1).getUri();
+//        } else if (data.getData() != null) {
+//            picUri = data.getData();
+//        }
+//        filePath = getPath(picUri);
+//        try {
+//            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
+//            images.add(bitmap);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        //    Toast.makeText(getApplicationContext(),"Dentro respos" + itemCount, Toast.LENGTH_LONG).show();
+                        //   if (data.getClipData() != null) {
+//                        if (items > 1) {
+//                            uploadBitmap(data, items - 1, newpostID);
+//                        } else {
+//                            //mainCategoryRecycler.setAdapter(new CategoryItemRecyclerAdapter(getApplicationContext(),images));
+//                            Intent goToHome = new Intent(getBaseContext(), MapsHomeActivity.class);
+//                            startActivity(goToHome);
+//                        }
+//                        } else {
+//
+                         Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
+//                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("GotError", "" + error.getMessage());
+                    }
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("_id", UserID);
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(image)));
+                return params;
+            }
+        };
+        //adding the request to volley
+        Volley.newRequestQueue(RegistrationActivity.this).add(volleyMultipartRequest);
+
+    }
+
+    private byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
 
 }

@@ -73,7 +73,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private int CURSOR_IMAGES = 0;
 
 
-
     private static final int GALLERY_REQUEST = 9;
     //Initialize variable
     GoogleMap googleMap;
@@ -95,17 +94,13 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private String nameAuthor;
     GridView gridView;
 
-
     private CircularImageView imageAuthor, userLoggedImage;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewplace);
 
-        placeID = getIntent().getStringExtra("placeId");
-        getPlace(placeID);
 
         this.imageAuthor = findViewById(R.id.placeAuthorProfileAvatarID);
         this.title = findViewById(R.id.placeTitleID);
@@ -117,11 +112,9 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
         gridView = findViewById(R.id.imageGrid);
         setDefaultImages(gridView);
-
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -133,7 +126,15 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         ListView listView = findViewById(R.id.lista);
         listView.setAdapter(new CustomListAdapter(comments, this));
     }
-    private void setFotoDavide(){
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        placeID = getIntent().getStringExtra("placeId");
+        getPlace(placeID);
+    }
+
+    private void setFotoDavide() {
         URL url = null;
         URL url2 = null;
         try {
@@ -158,7 +159,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void getPlace(String placeID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        System.out.println("L'id e' = " + placeID);
         JSONObject jsonBody = null;
 
         try {
@@ -176,40 +176,32 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
                 try {
                     JSONObject place = response.getJSONObject("post");
-                    System.out.println("IL POSTO E' " + place.toString());
 
                     titlePlace = place.getString("title");
                     descriptionPlace = place.getString("description");
                     authorID = place.getString("author");
 
-                    placeLatLng = new LatLng(place.getJSONObject("location").getJSONArray("coordinates").getDouble(0),place.getJSONObject("location").getJSONArray("coordinates").getDouble(1));
-
+                    placeLatLng = new LatLng(place.getJSONObject("location").getJSONArray("coordinates").getDouble(0),
+                            place.getJSONObject("location").getJSONArray("coordinates").getDouble(1));
 
                     getPlaceLocation();
-
                     title.setText(titlePlace);
                     description.setText(descriptionPlace);
-
                     getAuthor(authorID);
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
-
         requestQueue.add(jsonObjectRequest);
-
     }
 
-    private void getAuthor(String authorId){
+    private void getAuthor(String authorId) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
@@ -234,7 +226,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -246,8 +237,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         requestQueue.add(jsonObjectRequest);
 
     }
-
-
 
 
     private List<Comment> getListData() {
@@ -330,14 +319,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         if (googleMap == null) {
             return;
         } else {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             googleMap.setMyLocationEnabled(true);

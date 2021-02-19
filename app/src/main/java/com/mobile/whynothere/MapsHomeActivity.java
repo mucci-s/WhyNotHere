@@ -101,6 +101,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
     private static final String TAG = MapsHomeActivity.class.getSimpleName();
     private String userLogged;
+    private String markerPlaceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,16 +184,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
-        navigationBar.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                    case R.id.profile:
-                    case R.id.addplace:
-                }
-            }
-        });
 
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
@@ -242,7 +233,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                         }
                     }, 500);
 
-
                 } else {
 
                     TextView title = bottomSheetLayoutPlaceInfo.findViewById(R.id.title_place_info);
@@ -254,7 +244,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
                     title.setText(placeInfo.getTitle());
                     coordinate.setText(placeInfo.getPosition().toString().substring(8));
-
+                    markerPlaceId = placeInfo.getPlaceID();
                     if (getGeoLocate(placeInfo.getPosition()) == null) {
                         address.setText("Non c'è indirizzo per questo luogo");
                     } else {
@@ -555,8 +545,11 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 CustomNearlyPlaceAdapter selected = ((CustomNearlyPlaceAdapter) parent.getAdapter());
-                                Toast toast = Toast.makeText(getApplicationContext(), selected.getPlaceSelectedID(position), Toast.LENGTH_SHORT);
-                                toast.show();
+                                Intent goToPlace = new Intent(MapsHomeActivity.this, ViewPlaceActivity.class);
+                                goToPlace.putExtra("placeId",selected.getPlaceSelectedID(position));
+                                startActivity(goToPlace);
+//                                Toast toast = Toast.makeText(getApplicationContext(), selected.getPlaceSelectedID(position), Toast.LENGTH_SHORT);
+//                                toast.show();
                             }
                         });
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -661,6 +654,12 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         Intent goToUserProfileIntent = new Intent(this, UserProfileActivity.class);
         goToUserProfileIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToUserProfileIntent);
+    }
+
+    public void goToPlaceView(View view){
+        Intent goToPlaceView = new Intent(this, ViewPlaceActivity.class);
+        goToPlaceView.putExtra("placeId",this.markerPlaceId);
+        this.startActivity(goToPlaceView);
     }
 
 

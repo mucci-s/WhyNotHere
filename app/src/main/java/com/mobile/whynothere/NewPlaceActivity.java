@@ -418,7 +418,6 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                             uploadBitmap(data, items - 1, newpostID);
                         } else {
                             //mainCategoryRecycler.setAdapter(new CategoryItemRecyclerAdapter(getApplicationContext(),images));
-                            Toast.makeText(getApplicationContext(), "Upload completato", Toast.LENGTH_LONG).show();
                             Intent goToHome = new Intent(getBaseContext(), MapsHomeActivity.class);
                             startActivity(goToHome);
                         }
