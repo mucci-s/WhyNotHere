@@ -38,16 +38,13 @@
             app:layout_constraintStart_toEndOf="@+id/listProfileAvatarID">
 
             <TextView
-                android:id="@+id/titleNewPlaceID"
+                android:id="@+id/authorCommentID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-
-                android:hint="@string/titleExample"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-
                 android:paddingTop="3dp"
+
+                android:paddingRight="5dp"
                 android:singleLine="false"
                 android:textColor="#3CB3C0"
                 android:textColorHint="#3CB3C0"
@@ -55,18 +52,15 @@
                 android:textStyle="italic"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/linearLayoutIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="InvalidId">
 
             </TextView>
 
             <TextView
-                android:id="@+id/descriptionNewPlaceID"
+                android:id="@+id/descriptionCommentID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:hint="@string/descriptionExample"
                 android:maxLines="4"
                 android:paddingStart="3dp"
                 android:paddingEnd="10dp"
@@ -82,7 +76,7 @@
                 android:textStyle="bold"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleNewPlaceID"
+                app:layout_constraintTop_toBottomOf="@+id/authorCommentID"
                 tools:ignore="InvalidId">
 
             </TextView>

@@ -6,8 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,11 +20,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
 import android.os.StrictMode;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -83,6 +87,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
 
+    private JSONObject place;
     private LatLng placeLatLng;
     private Location placeLocation;
     private LinearLayout formLayout;
@@ -96,11 +101,13 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private String authorID;
     private String nameAuthor;
 
-    private EditText addCommentEditText;
-    private ImageButton addCommentButton;
-    GridView gridView;
 
+    private EditText addCommentEditText;
+    private ImageView addCommentButton;
+    GridView gridView;
+    ListView listCommentView;
     private CircularImageView imageAuthor, userLoggedImage;
+
 
 
     @Override
@@ -110,12 +117,14 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
         getUserId();
 
+        this.listCommentView = findViewById(R.id.lista);
         this.imageAuthor = findViewById(R.id.placeAuthorProfileAvatarID);
         this.title = findViewById(R.id.placeTitleID);
         this.description = findViewById(R.id.placeDescriptionID);
         this.author = findViewById(R.id.placeAuthorID);
         this.userLoggedImage = findViewById(R.id.avatarUserLogged);
 
+        this.addCommentButton = findViewById(R.id.addCommentButtonID);
         this.addCommentEditText = findViewById(R.id.addCommentID);
         setFotoDavide();
 
@@ -130,11 +139,33 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                 //   showDialogBox(position);
             }
         });
-/*
-        List<Comment> comments = getListData();
-        ListView listView = findViewById(R.id.lista);
-        listView.setAdapter(new CustomListAdapter(comments, this));
-*/
+
+        listCommentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CustomListAdapter customListAdapter = (CustomListAdapter) parent.getAdapter();
+                Intent goToProfile = new Intent(ViewPlaceActivity.this, UserProfileActivity.class);
+                goToProfile.putExtra("userId",customListAdapter.getIdAuthor(position));
+                startActivity(goToProfile);
+            }
+        });
+
+        //addCommentButton.setBackgroundResource(R.drawable.custom_insert_comment);
+
+        addCommentButton.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                    addCommentButton.setImageResource(R.drawable.ic_baseline_add_comment_focused);
+                else if(event.getAction() == MotionEvent.ACTION_UP)
+                    addCommentButton.setImageResource(R.drawable.ic_baseline_add_comment);
+
+                return false;
+            }
+        });
+
     }
 
     public void getUserId(){
@@ -152,6 +183,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         super.onStart();
         placeID = getIntent().getStringExtra("placeId");
         getPlace(placeID);
+
+
     }
 
     public void onClickAddComment(View view) {
@@ -161,7 +194,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                 @Override
                 public void run() {
                     insertComment();
-
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
             }, 500);
 
@@ -211,7 +245,17 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
             @Override
             public void onResponse(JSONObject response) {
-
+                try {
+                    listCommentView.setAdapter(new CustomListAdapter(response.getJSONArray("comments"),getApplicationContext()));
+                    listCommentView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listCommentView.setSelection(listCommentView.getCount()-1);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 addCommentEditText.getText().clear();
                 Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
             }
@@ -243,7 +287,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             public void onResponse(JSONObject response) {
 
                 try {
-                    JSONObject place = response.getJSONObject("post");
+                    place = response.getJSONObject("post");
 
                     titlePlace = place.getString("title");
                     descriptionPlace = place.getString("description");
@@ -256,6 +300,13 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                     title.setText(titlePlace);
                     description.setText(descriptionPlace);
                     getAuthor(authorID);
+
+                    ListView listView = findViewById(R.id.lista);
+                    try {
+                        listView.setAdapter(new CustomListAdapter(place.getJSONArray("comments"),ViewPlaceActivity.this));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -289,7 +340,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
                 try {
                     JSONObject user = response.getJSONObject("user");
-                    nameAuthor = user.getString("name");
+                    nameAuthor = user.getString("username");
                     author.setText(nameAuthor);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -307,27 +358,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    private List<Comment> getListData() {
-        List<Comment> list = new ArrayList<Comment>();
-        Comment prova1 = new Comment("Peppino", "Bellissimo posto Bellissimo posto BELLO BELLO BELLO BELLO BELLO BELLO BELLO BELLO", R.drawable.avatar_icon);
-        Comment prova2 = new Comment("Carlo", "Stancante arrivarci.", R.drawable.avatar_icon);
-        Comment prova3 = new Comment("Antonio", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
-        Comment prova4 = new Comment("Antonino", "Consiglio, da ritornarciTOPTTOPTOTP.", R.drawable.avatar_icon);
-        Comment prova5 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
-        Comment prova6 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
-        Comment prova7 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
-        Comment prova8 = new Comment("Peppe", "Consiglio, da ritornarci.", R.drawable.avatar_icon);
-
-        list.add(prova1);
-        list.add(prova2);
-        list.add(prova3);
-        list.add(prova4);
-        list.add(prova5);
-        list.add(prova6);
-        list.add(prova7);
-        list.add(prova8);
-        return list;
-    }
 
 
     public void setDefaultImages(GridView gridView) {

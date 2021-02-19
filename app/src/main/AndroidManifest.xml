@@ -20,16 +20,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhyNotHere">
         <activity android:name=".ViewPlaceActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             </activity>
         <activity
             android:name=".NewPlaceActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
 
 
-        <activity android:name=".UserProfileActivity" />
+        <activity android:name=".UserProfileActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".UserSettings" />
+        <activity android:name=".UserSettings"
+            android:screenOrientation="portrait"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -44,9 +48,12 @@
 
         <activity
             android:name=".MapsHomeActivity"
-            android:label="@string/title_activity_maps_home" />
-        <activity android:name=".RegistrationActivity" />
-        <activity android:name=".LoginActivity">
+            android:label="@string/title_activity_maps_home"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RegistrationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

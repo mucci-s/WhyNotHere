@@ -1,9 +1,7 @@
 package com.mobile.whynothere.utility.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +16,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.R;
-import com.mobile.whynothere.models.Comment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 public class CustomListAdapter  extends BaseAdapter {
 
@@ -62,46 +56,52 @@ public class CustomListAdapter  extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
-        if (view == null) {
 
+        if (view == null) {
+            holder = new ViewHolder();
             try {
-                getAuthor(listComment.getJSONObject(i).getString("user_id"),i);
+                getAuthor(listComment.getJSONObject(i).getString("user_id"),holder);
+                System.out.print("Username vale : "+ username);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             view = layoutInflater.inflate(R.layout.list_comment_layout, null);
-            holder = new ViewHolder();
+
             holder.authorImageView = view.findViewById(R.id.listProfileAvatarID);
-            holder.authorNameView = view.findViewById(R.id.titleNewPlaceID);
-            holder.commentTextView = view.findViewById(R.id.descriptionNewPlaceID);
+            holder.authorNameView = view.findViewById(R.id.authorCommentID);
+            holder.commentTextView = view.findViewById(R.id.descriptionCommentID);
 
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-        URL url = null;
 
         JSONObject comment = null;
         try {
             comment = this.listComment.getJSONObject(i);
             holder.commentTextView.setText(comment.getString("description"));
-            holder.authorNameView.setText(username);
+           // holder.authorNameView.setText(username);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        try {
-            comment.getString("description");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
 
         //holder.authorImageView.setImageResource(comment.getPhotoProfile());
 
         return view;
     }
 
-    private void getAuthor(String authorId, int i) {
+    public String getIdAuthor(int position) {
+        try {
+            return listComment.getJSONObject(position).getString("user_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } return null;
+    }
+
+    private void getAuthor(String authorId, ViewHolder holder) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this.context);
 
@@ -121,8 +121,10 @@ public class CustomListAdapter  extends BaseAdapter {
 
                 try {
                     JSONObject user = response.getJSONObject("user");
-                    username = user.getString("name");
+                    username = user.getString("username");
                     icon = user.getString("photo_profile");
+                    holder.authorNameView.setText(username);
+                    Log.i("Username +", username);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
