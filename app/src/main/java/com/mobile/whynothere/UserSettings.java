@@ -19,6 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
@@ -113,6 +115,12 @@ public class UserSettings extends AppCompatActivity {
 
                 try {
                     JSONObject user = response.getJSONObject("user");
+
+                    Glide.with(UserSettings.this)
+                            .load(user.getString("photo_profile"))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .placeholder(R.drawable.avatar_icon)
+                            .into(avatarView);
 
                     userName = user.getString("name");
                     nameView.setText(userName);

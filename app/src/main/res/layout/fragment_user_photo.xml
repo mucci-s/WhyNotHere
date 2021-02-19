@@ -2,40 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <GridView
+        android:smoothScrollbar="true"
+        android:id="@+id/imageGridID"
         android:layout_width="match_parent"
-        android:layout_height="700dp"
-        android:scrollbars="none">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:numColumns="3"
+        android:scrollbars="vertical"
+        android:stretchMode="columnWidth">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="700dp"
-            android:orientation="vertical" >
-
-            <GridView
-                android:id="@+id/gridViewID"
-
-                android:layout_width="match_parent"
-                android:layout_height="700dp"
-
-                android:gravity="center"
-
-                android:horizontalSpacing="1dp"
-                android:numColumns="3"
-                android:scrollbars="vertical"
-
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="1dp">
-
-            </GridView>
-
-        </LinearLayout>
-
-    </ScrollView>
+    </GridView>
 
 </LinearLayout>

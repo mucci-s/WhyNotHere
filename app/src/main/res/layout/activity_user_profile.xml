@@ -30,7 +30,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -39,15 +40,12 @@
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profileAvatarID"
                 android:layout_width="108dp"
-
                 android:layout_height="106dp"
                 android:layout_alignParentStart="true"
-
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
-
                 android:layout_marginTop="10dp"
-
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/avatar_icon" />
 
             <androidx.cardview.widget.CardView
@@ -128,23 +126,23 @@
             <View
                 android:id="@+id/dividerID"
 
-                android:background="?android:attr/listDivider"
-
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
 
+                android:layout_height="3dp"
                 android:layout_alignParentStart="true"
+
+                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
 
-                android:layout_marginTop="127dp"
-
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
 
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="127dp"
+
+                android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
 
-                android:layout_alignParentTop="true"/>
+                android:background="?android:attr/listDivider" />
 
             <ImageView
                 android:id="@+id/profileSpottedPlacesID"
@@ -170,21 +168,44 @@
 
             <FrameLayout
                 android:id="@+id/frameLayoutID"
-
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
+                android:layout_height="match_parent"
                 android:layout_below="@+id/dividerID"
-
+                android:padding="10dp"
                 android:layout_alignParentStart="true"
-
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="38dp"/>
+                android:layout_marginTop="28dp"
+                android:scrollbars="vertical" />
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/linearLayout"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/cardViewID">-->
+
+
+<!--        <GridView-->
+
+<!--            android:id="@+id/imageGridID"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:columnWidth="90dp"-->
+<!--            android:gravity="center"-->
+<!--            android:horizontalSpacing="10dp"-->
+<!--            android:numColumns="3"-->
+<!--            android:scrollbars="vertical"-->
+<!--            android:stretchMode="columnWidth"-->
+<!--            android:verticalSpacing="10dp">-->
+
+<!--        </GridView>-->
+
+<!--    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/linearLayout"

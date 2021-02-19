@@ -107,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClickSignUp(View view) {
         Intent goToRegistrationIntent = new Intent(this, RegistrationActivity.class);
+        this.finish();
         this.startActivity(goToRegistrationIntent);
     }
 

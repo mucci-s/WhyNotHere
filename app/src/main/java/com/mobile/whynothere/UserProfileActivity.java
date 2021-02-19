@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,11 +20,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.fragments.userview.UserLikedPhotoFragment;
 import com.mobile.whynothere.fragments.userview.UserPhotoFragment;
+import com.mobile.whynothere.utility.adapters.ImageAdaptor;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,13 +51,14 @@ public class UserProfileActivity extends AppCompatActivity {
     private BottomNavigationView navigationBar;
 
     private String userLogged;
-    private String userPassedId = "602a546a74155400046b68fd";
 
     private String userName;
     private String userSurname;
     private String userUsername;
     private String userId;
     private String userBio;
+    private GridView gridView;
+
 
     UserPhotoFragment userPhotoFragment;
     UserLikedPhotoFragment userLikedPhotoFragment;
@@ -62,9 +68,7 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-
        /* this.userLogged = getIntent().getStringExtra("userLogged");
-
         try {
             JSONObject userObject = new JSONObject(userLogged);
             userId = userObject.getString("_id");
@@ -72,9 +76,10 @@ public class UserProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 */
-
         this.getUserId();
         this.getUserData(userId);
+
+
 
         this.avatarView = this.findViewById(R.id.profileAvatarID);
         this.nameSurnameView = this.findViewById(R.id.profileNameSurnameID);
@@ -83,6 +88,7 @@ public class UserProfileActivity extends AppCompatActivity {
         this.settingsButton = this.findViewById(R.id.settingsButtonID);
         this.spottedPlacesButton = this.findViewById(R.id.profileSpottedPlacesID);
         this.likedPlacesButton = this.findViewById(R.id.profileLikedPlacesID);
+        this.gridView = this.findViewById(R.id.imageGridID);
 
         this.navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
         this.navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -97,8 +103,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.addplace:
+                        goToAddPlace();
                         return true;
-
                 }
                 return false;
             }
@@ -116,7 +122,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         this.getUserId();
         this.getUserData(this.userId);
-
+//        ImageAdaptor defaultImageAdaptor = new ImageAdaptor(getApplicationContext());
+//        this.gridView.setAdapter(defaultImageAdaptor);
         this.navigationBar.setSelectedItemId(R.id.profile);
 
        /* if(!this.userId.equals(this.userPassedId)){
@@ -154,31 +161,38 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 try {
                     JSONObject user = response.getJSONObject("user");
+                    Glide.with(UserProfileActivity.this)
+                            .load(user.getString("photo_profile"))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .placeholder(R.drawable.avatar_icon)
+                            .into(avatarView);
 
                     userName = user.getString("name");
                     userSurname = user.getString("surname");
                     nameSurnameView.setText(userName + " " + userSurname);
-
                     userUsername = user.getString("username");
                     usernameView.setText(userUsername);
-
                     userBio = user.getString("bio");
                     bioView.setText(userBio);
+                    JSONArray userPosts = user.getJSONArray("posts");
+
+
+                    userPhotoFragment.setPics(userPosts);
+
+//                    ImageAdaptor defaultImageAdaptor = new ImageAdaptor(getApplicationContext());
+//                    gridView.setAdapter(defaultImageAdaptor);
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
-
         requestQueue.add(jsonObjectRequest);
-
     }
 
     public void onClickNearlyButton(View view) {
@@ -232,5 +246,13 @@ public class UserProfileActivity extends AppCompatActivity {
         goToSettingsIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToSettingsIntent);
     }
+
+
+
+    public void goToAddPlace() {
+        Intent goToAddPlaceIntent = new Intent(this, NewPlaceActivity.class);
+        this.startActivity(goToAddPlaceIntent);
+    }
+
 
 }

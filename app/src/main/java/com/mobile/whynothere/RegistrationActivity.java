@@ -122,7 +122,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 try {
 
                     if (response.getBoolean("userresult")) {
-                        uploadBitmap(imageSelected,response.getJSONObject("userdata").getString("_id"));
+                        if (imageUri != null) {
+                            uploadBitmap(imageSelected, response.getJSONObject("userdata").getString("_id"));
+                        }
                         Toast.makeText(getApplicationContext(), "BENVENUTO!", Toast.LENGTH_LONG).show();
 
                         JSONObject user = response.getJSONObject("userdata");
@@ -204,7 +206,6 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-
     private void uploadBitmap(final Bitmap image, String UserID) {
 //        Uri picUri = null;
 //        CustomRecyclerAdaptor adaptor1 = new CustomRecyclerAdaptor(getApplicationContext(), data);
@@ -238,7 +239,7 @@ public class RegistrationActivity extends AppCompatActivity {
 //                        }
 //                        } else {
 //
-                         Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
 //                        }
                     }
                 },

@@ -42,7 +42,7 @@ public class CustomImageAdapterProfile extends BaseAdapter {
         if(imageView == null){
             imageView = new ImageView(mContext);
             imageView.setLayoutParams(new GridView.LayoutParams(300,300));
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
         imageView.setImageResource(imageIds.get(position));
