@@ -35,7 +35,7 @@ public class UserSettings extends AppCompatActivity {
     private EditText nameView;
     private EditText surnameView;
     private EditText usernameView;
-    private TextView emailView;
+    private EditText emailView;
     private EditText passwordView;
     private EditText confirmPasswordView;
     private EditText bioView;

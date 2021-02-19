@@ -235,13 +235,13 @@ public class LoginActivity extends AppCompatActivity {
         this.startActivity(sendEmailIntent);
        */
 
-       /* Intent i = new Intent(Intent.ACTION_SENDTO);
+        Intent i = new Intent(Intent.ACTION_SENDTO);
         i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"davirus98@gmail.com"});
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{});
         //i.putExtra(Intent.EXTRA_CC, new String[]{"mailCC@unimol.it"});
         i.putExtra(Intent.EXTRA_SUBJECT, "Riunionedidomani");
         i.putExtra(Intent.EXTRA_TEXT, "Carissimi,…");
-        this.startActivity(i);*/
+        this.startActivity(i);
 
     }
 

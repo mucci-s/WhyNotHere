@@ -84,15 +84,15 @@
                 tools:layout_editor_absoluteX="20dp"
                 tools:layout_editor_absoluteY="211dp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/profileEmailID"
+                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profileUsernameID"
                 android:layout_marginTop="0dp"
                 android:ems="10"
                 android:textAlignment="textStart"
-                android:textColor="#000000"
                 android:textSize="18sp"
                 tools:layout_conversion_absoluteHeight="45dp"
                 tools:layout_conversion_absoluteWidth="372dp"

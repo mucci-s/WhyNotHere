@@ -322,24 +322,15 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void onClickAddPlace(View view) {
-
-        imageLayout.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        if (images.size() != 0) {
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    insertPlace();
-                }
-            }, 500);
-        } else {
-            Toast.makeText(getApplicationContext(), "INSERIRE FOTO!", Toast.LENGTH_LONG).show();
+        if (checkField()) {
+            insertPlace();
         }
     }
 
-
     public void insertPlace() {
+        imageLayout.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JSONObject jsonBody = null;
 
@@ -362,7 +353,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
                 title.getText().clear();
                 description.getText().clear();
-                Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
                 try {
                     uploadBitmap(images, images.size(), response.getString("_id"));
                 } catch (JSONException e) {
@@ -480,5 +471,19 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         return path;
     }
 
+    private boolean checkField() {
+
+        if ((this.title.getText().toString().isEmpty()) || (this.description.getText().toString().isEmpty()) || (this.images.size() == 0)) {
+            Toast.makeText(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
+            return false;
+        } else if ((title.length() < 3) || (title.length() > 25)) {
+            Toast.makeText(getApplicationContext(), "INSERIRE UN TITOLO VALIDO!", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (description.length() > 150) {
+            Toast.makeText(getApplicationContext(), "DESCRIZIONE TROPPO LUNGA!", Toast.LENGTH_LONG).show();
+            return false;
+        } else return true;
+
+    }
 
 }
