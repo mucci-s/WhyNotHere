@@ -76,13 +76,13 @@ public class UserProfileActivity extends AppCompatActivity {
         this.getUserId();
         this.getUserData(userId);
 
-        this.avatarView = (CircularImageView) this.findViewById(R.id.profileAvatarID);
-        this.nameSurnameView = (TextView) this.findViewById(R.id.profileNameSurnameID);
-        this.usernameView = (TextView) this.findViewById(R.id.profileUsernameID);
-        this.bioView = (TextView) this.findViewById(R.id.profileBioID);
-        this.settingsButton = (ImageView) this.findViewById(R.id.settingsButtonID);
-        this.spottedPlacesButton = (ImageView) this.findViewById(R.id.profileSpottedPlacesID);
-        this.likedPlacesButton = (ImageView) this.findViewById(R.id.profileLikedPlacesID);
+        this.avatarView = this.findViewById(R.id.profileAvatarID);
+        this.nameSurnameView = this.findViewById(R.id.profileNameSurnameID);
+        this.usernameView = this.findViewById(R.id.profileUsernameID);
+        this.bioView = this.findViewById(R.id.profileBioID);
+        this.settingsButton = this.findViewById(R.id.settingsButtonID);
+        this.spottedPlacesButton = this.findViewById(R.id.profileSpottedPlacesID);
+        this.likedPlacesButton = this.findViewById(R.id.profileLikedPlacesID);
 
         this.navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
         this.navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -119,9 +119,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         this.navigationBar.setSelectedItemId(R.id.profile);
 
-        if(!this.userId.equals(this.userPassedId)){
+       /* if(!this.userId.equals(this.userPassedId)){
             this.settingsButton.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         this.settingsButton.setImageResource(R.drawable.settings_grey);
     }

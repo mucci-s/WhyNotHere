@@ -60,18 +60,20 @@ public class UserSettings extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }*/
+
         this.getUserId();
         this.getUserData(userId);
 
-        this.avatarView = (CircularImageView) this.findViewById(R.id.profileAvatarID);
-        this.nameView = (EditText) this.findViewById(R.id.profileNameID);
-        this.surnameView = (EditText) this.findViewById(R.id.profileSurnameID);
-        this.usernameView = (EditText) this.findViewById(R.id.profileUsernameID);
-        this.emailView = (TextView) this.findViewById(R.id.profileEmailID);
-        this.passwordView = (EditText) this.findViewById(R.id.profilePasswordID);
-        this.confirmPasswordView = (EditText) this.findViewById(R.id.profileConfirmPasswordID);
-        this.bioView = (EditText) this.findViewById(R.id.profileBioID);
-        this.logoutButton = (ImageView) this.findViewById(R.id.logoutButtonID);
+        this.avatarView = this.findViewById(R.id.profileAvatarID);
+        this.nameView = this.findViewById(R.id.profileNameID);
+        this.surnameView = this.findViewById(R.id.profileSurnameID);
+        this.usernameView = this.findViewById(R.id.profileUsernameID);
+        this.emailView = this.findViewById(R.id.profileEmailID);
+        this.passwordView = this.findViewById(R.id.profilePasswordID);
+        this.confirmPasswordView = this.findViewById(R.id.profileConfirmPasswordID);
+        this.bioView = this.findViewById(R.id.profileBioID);
+        this.logoutButton = this.findViewById(R.id.logoutButtonID);
+
     }
 
     @Override
@@ -81,7 +83,6 @@ public class UserSettings extends AppCompatActivity {
         this.getUserId();
         this.getUserData(this.userId);
     }
-
 
     public void getUserId(){
         SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
@@ -163,7 +164,8 @@ public class UserSettings extends AppCompatActivity {
                 SharedPreferences.Editor editor = userLoggedPreferences.edit();
 
                 try {
-                    JSONObject userPreferences = new JSONObject(userLogged);
+                    //new JSONObject(userId); //UserLogged?
+                    JSONObject userPreferences = new JSONObject(userLoggedPreferences.getString("UserLogged", ""));
                     userPreferences.put("session", false);
                     editor.putString("UserLogged", userPreferences.toString());
                     editor.apply();

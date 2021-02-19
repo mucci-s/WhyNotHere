@@ -32,16 +32,18 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
 
+    private TextView lostPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);             //.getstring(_id)
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+        SharedPreferences userPreferences = getSharedPreferences("session", MODE_PRIVATE);
         try {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
-            if(userLogged.getBoolean("session")){
+            if (userLogged.getBoolean("session")) {
                 goToHome(userLogged);
-            }else {
+            } else {
                 Toast.makeText(getApplicationContext(), "Accedi", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
@@ -52,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = (TextView) findViewById(R.id.singnupButtonId);
         emailEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
+        lostPassword = findViewById(R.id.lostPasswordID);
+
         final Button loginButton = findViewById(R.id.login_button);
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
@@ -147,9 +151,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signInAction(JSONObject user) {
 
-        SharedPreferences sessionPreferences = getSharedPreferences("session",MODE_PRIVATE);
-        SharedPreferences.Editor  editor = sessionPreferences.edit();
-        editor.putString("UserLogged",user.toString());
+        SharedPreferences sessionPreferences = getSharedPreferences("session", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sessionPreferences.edit();
+        editor.putString("UserLogged", user.toString());
         editor.apply();
 
         goToHome(user);
@@ -188,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.getBoolean("password") &&
                             response.getBoolean("email")) {
                         JSONObject user = response.getJSONObject("user");
-                        user.put("session",true);
+                        user.put("session", true);
 
                         signInAction(user);
                     }
@@ -220,6 +224,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    public void onClickLostPassword(View view) {
+       /* Intent sendEmailIntent = new Intent(Intent.ACTION_SENDTO);
+        sendEmailIntent.setType("text/html");
+        sendEmailIntent.putExtra(Intent.EXTRA_EMAIL, "davirus98@gmail.com");
+        sendEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+        sendEmailIntent.putExtra(Intent.EXTRA_TEXT, "I'm email body.");
+        this.startActivity(sendEmailIntent);
+       */
+
+       /* Intent i = new Intent(Intent.ACTION_SENDTO);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"davirus98@gmail.com"});
+        //i.putExtra(Intent.EXTRA_CC, new String[]{"mailCC@unimol.it"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Riunionedidomani");
+        i.putExtra(Intent.EXTRA_TEXT, "Carissimi,…");
+        this.startActivity(i);*/
+
     }
 
 }
