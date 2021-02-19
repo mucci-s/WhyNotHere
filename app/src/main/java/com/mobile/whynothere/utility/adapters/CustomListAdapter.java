@@ -10,9 +10,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.R;
 import com.mobile.whynothere.models.Comment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -21,21 +31,30 @@ import java.util.List;
 
 public class CustomListAdapter  extends BaseAdapter {
 
-    private List<Comment> listComment;
+    private JSONArray listComment;
     private LayoutInflater layoutInflater;
     private Context context;
+    private String username;
+    private String icon;
 
-    public CustomListAdapter(List<Comment> listComment, Context acontext) {
+    public CustomListAdapter(JSONArray listComment, Context acontext) {
         this.listComment = listComment;
         this.context = acontext;
         layoutInflater = LayoutInflater.from(acontext);
     }
 
     @Override
-    public int getCount() { return listComment.size();  }
+    public int getCount() { return listComment.length();  }
 
     @Override
-    public Object getItem(int i) { return listComment.get(i); }
+    public Object getItem(int i) {
+        try {
+            return listComment.getJSONObject(i);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    return null;
+    }
 
     @Override
     public long getItemId(int i) { return i; }
@@ -44,6 +63,12 @@ public class CustomListAdapter  extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
+
+            try {
+                getAuthor(listComment.getJSONObject(i).getString("user_id"),i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             view = layoutInflater.inflate(R.layout.list_comment_layout, null);
             holder = new ViewHolder();
             holder.authorImageView = view.findViewById(R.id.listProfileAvatarID);
@@ -56,25 +81,61 @@ public class CustomListAdapter  extends BaseAdapter {
         }
 
         URL url = null;
+
+        JSONObject comment = null;
         try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            url = new URL("https://instagram.fcia2-1.fna.fbcdn.net/v/t51.2885-19/s320x320/129774148_1769584386533325_563684751460050178_n.jpg?_nc_ht=instagram.fcia2-1.fna.fbcdn.net&_nc_ohc=rrTmSh1ro_EAX_u6lWM&tp=1&oh=c906bbd48d7852869b94b8f68622e95e&oe=6056DEBB");
-            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            holder.authorImageView.setImageBitmap(bmp);
-        } catch (MalformedURLException e) {
+            comment = this.listComment.getJSONObject(i);
+            holder.commentTextView.setText(comment.getString("description"));
+            holder.authorNameView.setText(username);
+        } catch (JSONException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        }
+        try {
+            comment.getString("description");
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Comment comment = this.listComment.get(i);
-        holder.authorNameView.setText(comment.getAuthor());
-        holder.commentTextView.setText(comment.getComment());
         //holder.authorImageView.setImageResource(comment.getPhotoProfile());
 
         return view;
+    }
+
+    private void getAuthor(String authorId, int i) {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this.context);
+
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"_id\":" + authorId + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject user = response.getJSONObject("user");
+                    username = user.getString("name");
+                    icon = user.getString("photo_profile");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
     }
 
     static class ViewHolder{

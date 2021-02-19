@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,11 +21,13 @@ import android.os.PersistableBundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,7 +48,6 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.models.Comment;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
 import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
-import com.mobile.whynothere.utility.adapters.DefaultImageAdaptorComment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,20 +90,25 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private TextView title;
     private TextView description;
 
-    private String placeID;
+    private String placeID, userId;
     private String titlePlace;
     private String descriptionPlace;
     private String authorID;
     private String nameAuthor;
+
+    private EditText addCommentEditText;
+    private ImageButton addCommentButton;
     GridView gridView;
 
     private CircularImageView imageAuthor, userLoggedImage;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewplace);
 
+        getUserId();
 
         this.imageAuthor = findViewById(R.id.placeAuthorProfileAvatarID);
         this.title = findViewById(R.id.placeTitleID);
@@ -108,6 +116,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         this.author = findViewById(R.id.placeAuthorID);
         this.userLoggedImage = findViewById(R.id.avatarUserLogged);
 
+        this.addCommentEditText = findViewById(R.id.addCommentID);
         setFotoDavide();
 
         gridView = findViewById(R.id.imageGrid);
@@ -121,10 +130,21 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                 //   showDialogBox(position);
             }
         });
-
+/*
         List<Comment> comments = getListData();
         ListView listView = findViewById(R.id.lista);
         listView.setAdapter(new CustomListAdapter(comments, this));
+*/
+    }
+
+    public void getUserId(){
+        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+        try {
+            JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
+            this.userId = userLogged.getString("_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -132,6 +152,21 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         super.onStart();
         placeID = getIntent().getStringExtra("placeId");
         getPlace(placeID);
+    }
+
+    public void onClickAddComment(View view) {
+
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    insertComment();
+
+                }
+            }, 500);
+
+            //getComment();
+
     }
 
     private void setFotoDavide() {
@@ -155,6 +190,39 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void insertComment(){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject(
+                    "{\"_id\":\"" + placeID + "\"," +
+                            "\"description\":\"" + addCommentEditText.getText().toString() + "\"," +
+                            "\"vote_post\":\"" + DEFAULT_ZOOM + "\"," +
+                            "\"user_id\":\"" + userId + "\"}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/post/addcomment";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                addCommentEditText.getText().clear();
+                Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void getPlace(String placeID) {
@@ -261,11 +329,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         return list;
     }
 
-    public void setDefaultImagesUserLoggedComment(GridView gridView) {
-        DefaultImageAdaptorComment defaultImageAdaptorComment = new DefaultImageAdaptorComment(defaultImages, this);
-        gridView.setAdapter(defaultImageAdaptorComment);
-        gridView.setEnabled(false);
-    }
 
     public void setDefaultImages(GridView gridView) {
         DefaultImageAdaptor defaultImageAdaptor = new DefaultImageAdaptor(defaultImages, this);
@@ -336,16 +399,12 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             outState.putParcelable(KEY_LOCATION, placeLocation);
         }
         super.onSaveInstanceState(outState);
-
-
     }
 
     private void getPlaceLocation() {
 
         LatLng location = placeLatLng;
-
         final Handler handler = new Handler(Looper.getMainLooper());
-
         handler.postDelayed(new Runnable() {
 
             @Override
@@ -357,6 +416,10 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                 googleMap.addMarker(options);
             }
         }, 1000);
+    }
+
+    private void getComment(){
+
 
 
     }
