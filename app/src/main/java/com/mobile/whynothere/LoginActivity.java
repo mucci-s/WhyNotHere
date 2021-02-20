@@ -2,12 +2,14 @@ package com.mobile.whynothere;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,8 +22,12 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mobile.whynothere.utility.LoginFormState;
+import com.mobile.whynothere.utility.emailsender.JavaMailAPI;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
 
     private TextView lostPassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         registerButton = (TextView) findViewById(R.id.singnupButtonId);
         emailEditText = findViewById(R.id.username);
@@ -228,22 +234,58 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onClickLostPassword(View view) {
-       /* Intent sendEmailIntent = new Intent(Intent.ACTION_SENDTO);
-        sendEmailIntent.setType("text/html");
-        sendEmailIntent.putExtra(Intent.EXTRA_EMAIL, "davirus98@gmail.com");
-        sendEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-        sendEmailIntent.putExtra(Intent.EXTRA_TEXT, "I'm email body.");
-        this.startActivity(sendEmailIntent);
-       */
 
-        Intent i = new Intent(Intent.ACTION_SENDTO);
-        i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{});
-        //i.putExtra(Intent.EXTRA_CC, new String[]{"mailCC@unimol.it"});
-        i.putExtra(Intent.EXTRA_SUBJECT, "Riunionedidomani");
-        i.putExtra(Intent.EXTRA_TEXT, "Carissimi,…");
-        this.startActivity(i);
+        String userEmail = this.emailEditText.getText().toString();
 
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"email\":" + userEmail + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyemail";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+
+                    if (response.getBoolean("error")) {
+                        Toast.makeText(getApplicationContext(), "EMAIL INESISTENTE!", Toast.LENGTH_LONG).show();
+                    } else {
+
+                        JSONObject user = response.getJSONObject("user");
+                        String userLostPassword = user.getString("password");
+
+                        JavaMailAPI javaMailAPI = new JavaMailAPI(getApplicationContext(), userEmail, "Recupero password", "La tua password è: " + userLostPassword);
+                        javaMailAPI.execute();
+
+                        Toast.makeText(getApplicationContext(), "TI ABBIAMO INVIATO UN'EMAIL!", Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void onClickBackground(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (imm.isAcceptingText()) {
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        }
     }
 
 }
+
+//android:icon="@mipmap/ic_launcher"

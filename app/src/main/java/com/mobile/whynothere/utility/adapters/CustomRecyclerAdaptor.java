@@ -24,7 +24,6 @@ import com.mobile.whynothere.R;
 public class CustomRecyclerAdaptor extends RecyclerView.Adapter<CustomRecyclerAdaptor.MyViewHolder> {
 
     private Context context;
-
     private Intent data;
     private int size;
 
@@ -42,11 +41,11 @@ public class CustomRecyclerAdaptor extends RecyclerView.Adapter<CustomRecyclerAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView mImage;
 
-
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mImage = itemView.findViewById(R.id.image);
+
             mImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

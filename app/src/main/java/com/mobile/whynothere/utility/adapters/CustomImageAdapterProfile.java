@@ -12,8 +12,8 @@ import java.util.List;
 
 public class CustomImageAdapterProfile extends BaseAdapter {
 
-    List<Integer> imageIds;
     Context mContext;
+    List<Integer> imageIds;
 
     public CustomImageAdapterProfile(List<Integer> defaultImage, Context mContext) {
         this.imageIds = defaultImage;
@@ -39,9 +39,9 @@ public class CustomImageAdapterProfile extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView = (ImageView) convertView;
 
-        if(imageView == null){
+        if (imageView == null) {
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(300,300));
+            imageView.setLayoutParams(new GridView.LayoutParams(300, 300));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 

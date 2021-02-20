@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 
-public class CustomListAdapter  extends BaseAdapter {
+public class CustomListAdapter extends BaseAdapter {
 
     private JSONArray listComment;
     private LayoutInflater layoutInflater;
@@ -38,7 +38,9 @@ public class CustomListAdapter  extends BaseAdapter {
     }
 
     @Override
-    public int getCount() { return listComment.length();  }
+    public int getCount() {
+        return listComment.length();
+    }
 
     @Override
     public Object getItem(int i) {
@@ -47,11 +49,13 @@ public class CustomListAdapter  extends BaseAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    return null;
+        return null;
     }
 
     @Override
-    public long getItemId(int i) { return i; }
+    public long getItemId(int i) {
+        return i;
+    }
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -59,9 +63,10 @@ public class CustomListAdapter  extends BaseAdapter {
 
         if (view == null) {
             holder = new ViewHolder();
+
             try {
-                getAuthor(listComment.getJSONObject(i).getString("user_id"),holder);
-                System.out.print("Username vale : "+ username);
+                getAuthor(listComment.getJSONObject(i).getString("user_id"), holder);
+                System.out.print("Username vale : " + username);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -73,20 +78,20 @@ public class CustomListAdapter  extends BaseAdapter {
             holder.commentTextView = view.findViewById(R.id.descriptionCommentID);
 
             view.setTag(holder);
+
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-
         JSONObject comment = null;
+
         try {
             comment = this.listComment.getJSONObject(i);
             holder.commentTextView.setText(comment.getString("description"));
-           // holder.authorNameView.setText(username);
+            // holder.authorNameView.setText(username);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         //holder.authorImageView.setImageResource(comment.getPhotoProfile());
 
@@ -94,17 +99,19 @@ public class CustomListAdapter  extends BaseAdapter {
     }
 
     public String getIdAuthor(int position) {
+
         try {
             return listComment.getJSONObject(position).getString("user_id");
         } catch (JSONException e) {
             e.printStackTrace();
-        } return null;
+        }
+
+        return null;
     }
 
     private void getAuthor(String authorId, ViewHolder holder) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this.context);
-
         JSONObject jsonBody = null;
 
         try {
@@ -112,8 +119,8 @@ public class CustomListAdapter  extends BaseAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
 
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
 
             @Override
@@ -128,11 +135,11 @@ public class CustomListAdapter  extends BaseAdapter {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
 
@@ -140,9 +147,10 @@ public class CustomListAdapter  extends BaseAdapter {
 
     }
 
-    static class ViewHolder{
+    static class ViewHolder {
         CircularImageView authorImageView;
         TextView authorNameView;
         TextView commentTextView;
     }
+
 }

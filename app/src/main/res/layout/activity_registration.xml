@@ -7,6 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_color"
+    android:clickable="true"
+    android:onClick="onClickBackground"
     tools:context=".RegistrationActivity">
 
     <androidx.cardview.widget.CardView
@@ -37,8 +39,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:scaleType="centerCrop"
                 android:onClick="onClickAvatar"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/avatar_icon" />
 
             <EditText

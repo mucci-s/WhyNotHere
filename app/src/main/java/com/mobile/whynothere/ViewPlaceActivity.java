@@ -109,7 +109,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private CircularImageView imageAuthor, userLoggedImage;
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,7 +144,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CustomListAdapter customListAdapter = (CustomListAdapter) parent.getAdapter();
                 Intent goToProfile = new Intent(ViewPlaceActivity.this, UserProfileActivity.class);
-                goToProfile.putExtra("userId",customListAdapter.getIdAuthor(position));
+                goToProfile.putExtra("userId", customListAdapter.getIdAuthor(position));
                 startActivity(goToProfile);
             }
         });
@@ -157,9 +156,9 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
                     addCommentButton.setImageResource(R.drawable.ic_baseline_add_comment_focused);
-                else if(event.getAction() == MotionEvent.ACTION_UP)
+                else if (event.getAction() == MotionEvent.ACTION_UP)
                     addCommentButton.setImageResource(R.drawable.ic_baseline_add_comment);
 
                 return false;
@@ -168,8 +167,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-    public void getUserId(){
-        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+    public void getUserId() {
+        SharedPreferences userPreferences = getSharedPreferences("session", MODE_PRIVATE);
         try {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
             this.userId = userLogged.getString("_id");
@@ -188,8 +187,15 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     public void onClickAddComment(View view) {
+        if (checkComment()) {
+            insertComment();
 
-            final Handler handler = new Handler(Looper.getMainLooper());
+            InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+        }
+
+          /*  final Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -199,7 +205,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }, 500);
 
-            //getComment();
+            //getComment();*/
 
     }
 
@@ -226,7 +232,14 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    private void insertComment(){
+    private boolean checkComment() {
+        if (this.addCommentEditText.getText().toString().length() == 0) {
+            Toast.makeText(getApplicationContext(), "INSERIRE UN COMMENTO VALIDO!", Toast.LENGTH_LONG).show();
+            return false;
+        } else return true;
+    }
+
+    private void insertComment() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JSONObject jsonBody = null;
 
@@ -246,11 +259,11 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    listCommentView.setAdapter(new CustomListAdapter(response.getJSONArray("comments"),getApplicationContext()));
+                    listCommentView.setAdapter(new CustomListAdapter(response.getJSONArray("comments"), getApplicationContext()));
                     listCommentView.post(new Runnable() {
                         @Override
                         public void run() {
-                            listCommentView.setSelection(listCommentView.getCount()-1);
+                            listCommentView.setSelection(listCommentView.getCount() - 1);
                         }
                     });
                 } catch (JSONException e) {
@@ -303,7 +316,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
                     ListView listView = findViewById(R.id.lista);
                     try {
-                        listView.setAdapter(new CustomListAdapter(place.getJSONArray("comments"),ViewPlaceActivity.this));
+                        listView.setAdapter(new CustomListAdapter(place.getJSONArray("comments"), ViewPlaceActivity.this));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -356,8 +369,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         requestQueue.add(jsonObjectRequest);
 
     }
-
-
 
 
     public void setDefaultImages(GridView gridView) {
@@ -448,8 +459,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         }, 1000);
     }
 
-    private void getComment(){
-
+    private void getComment() {
 
 
     }

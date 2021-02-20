@@ -261,5 +261,4 @@ public class UserProfileActivity extends AppCompatActivity {
         this.startActivity(goToAddPlaceIntent);
     }
 
-
 }

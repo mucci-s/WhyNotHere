@@ -3,11 +3,13 @@ package com.mobile.whynothere;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -86,8 +88,8 @@ public class UserSettings extends AppCompatActivity {
         this.getUserData(this.userId);
     }
 
-    public void getUserId(){
-        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+    public void getUserId() {
+        SharedPreferences userPreferences = getSharedPreferences("session", MODE_PRIVATE);
         try {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
             this.userId = userLogged.getString("_id");
@@ -208,6 +210,13 @@ public class UserSettings extends AppCompatActivity {
     public void onClickConfirm(View view) {
         if (this.checkField()) {
             this.checkUsername();
+        }
+    }
+
+    public void onClickBackground(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (imm.isAcceptingText()) {
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
     }
 
