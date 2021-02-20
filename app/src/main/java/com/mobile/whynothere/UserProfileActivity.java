@@ -80,7 +80,6 @@ public class UserProfileActivity extends AppCompatActivity {
         this.getUserData(userId);
 
 
-
         this.avatarView = this.findViewById(R.id.profileAvatarID);
         this.nameSurnameView = this.findViewById(R.id.profileNameSurnameID);
         this.usernameView = this.findViewById(R.id.profileUsernameID);
@@ -110,7 +109,9 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        this.userPhotoFragment = new UserPhotoFragment();
+
+        this.userPhotoFragment = new UserPhotoFragment(userId);
+
         this.fragmentManager = getSupportFragmentManager();
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
 
@@ -174,10 +175,10 @@ public class UserProfileActivity extends AppCompatActivity {
                     usernameView.setText(userUsername);
                     userBio = user.getString("bio");
                     bioView.setText(userBio);
-                    JSONArray userPosts = user.getJSONArray("posts");
 
 
-                    userPhotoFragment.setPics(userPosts);
+
+                    userPhotoFragment.setUserID(user.getString("_id"));
 
 //                    ImageAdaptor defaultImageAdaptor = new ImageAdaptor(getApplicationContext());
 //                    gridView.setAdapter(defaultImageAdaptor);
@@ -195,6 +196,11 @@ public class UserProfileActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
+
+
+
+
+
     public void onClickNearlyButton(View view) {
         goToHome();
     }
@@ -208,13 +214,15 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         this.spottedPlacesPressed = true;
+
         this.spottedPlacesButton.setImageResource(R.drawable.map_blue);
         this.spottedPlacesButton.setMaxHeight(2);
         this.spottedPlacesButton.setMaxWidth(2);
 
-        this.userPhotoFragment = new UserPhotoFragment();
+        this.userPhotoFragment = new UserPhotoFragment(userId);
         //Quando si va indietro potrebbe crashare, vedere video su yt
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
+      //  userPhotoFragment.setPics(userId);
     }
 
     public void onClickLikedPlaces(View view) {
@@ -246,7 +254,6 @@ public class UserProfileActivity extends AppCompatActivity {
         goToSettingsIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToSettingsIntent);
     }
-
 
 
     public void goToAddPlace() {

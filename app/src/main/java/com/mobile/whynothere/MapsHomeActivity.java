@@ -111,7 +111,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         String apiKey = getString(R.string.api_key);
         super.onCreate(savedInstanceState);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
@@ -140,6 +139,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
 
         searchButton = (ImageButton) findViewById(R.id.searchButton);
         navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
+        navigationBar.setSelectedItemId(R.id.home);
 
 
         bottomSheetLayout = findViewById(R.id.bottom_sheet);

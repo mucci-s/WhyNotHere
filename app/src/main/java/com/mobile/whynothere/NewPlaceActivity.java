@@ -113,6 +113,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker positionMarker;
     private ConstraintLayout imageLayout;
     private ProgressBar progressBar;
+    private LatLng newPositionMarker;
 
     List<Bitmap> images = new ArrayList<>(Arrays.<Bitmap>asList());
     List<Uri> uriImages = new ArrayList<>(Arrays.<Uri>asList());
@@ -174,6 +175,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -230,6 +232,19 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             ActivityCompat.requestPermissions(NewPlaceActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
+
+        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+            }
+            @Override
+            public void onMarkerDrag(Marker marker) {
+            }
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                newPositionMarker = positionMarker.getPosition();
+            }
+        });
     }
 
     private void getDeviceLocation() {
@@ -249,9 +264,11 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                                 new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                         LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
                         MarkerOptions options = new MarkerOptions().position(latLng)
+                                .draggable(true)
                                 .title("Sono qui");
                         positionMarker = googleMap.addMarker(options);
-                        googleMap.addMarker(options);
+                        newPositionMarker = positionMarker.getPosition();
+                       // googleMap.addMarker(options);
                     }
                 } else {
                     Log.d(TAG, "Current location is null. Using defaults.");
@@ -300,6 +317,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 44) {
@@ -339,7 +358,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                     "{\"title\":\"" + title.getText().toString() + "\"," +
                             "\"author\":\"" + userID + "\"," +
                             "\"description\":\"" + description.getText().toString() + "\"," +
-                            "\"location\": {\"coordinates\": [ " + positionMarker.getPosition().latitude + "," + positionMarker.getPosition().longitude + "], \"type\": \"Point\"} }");
+                            "\"location\": {\"coordinates\": [ " + newPositionMarker.latitude + "," + newPositionMarker.longitude + "], \"type\": \"Point\"} }");
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -78,7 +78,6 @@
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
-
                     android:drawablePadding="12dp"
                     android:hint="@string/titleExample"
                     android:paddingStart="10dp"
