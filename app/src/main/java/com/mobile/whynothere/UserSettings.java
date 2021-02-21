@@ -28,6 +28,8 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import es.dmoral.toasty.Toasty;
+
 public class UserSettings extends AppCompatActivity {
 
     private String userId;
@@ -180,7 +182,7 @@ public class UserSettings extends AppCompatActivity {
                     editor.putString("UserLogged", userPreferences.toString());
                     editor.apply();
 
-                    Toast.makeText(getApplicationContext(), "ARRIVEDERCI!", Toast.LENGTH_LONG).show();
+                    Toasty.info(getApplicationContext(), "ARRIVEDERCI!", Toast.LENGTH_LONG).show();
 
                     goToLogin();
                 } catch (JSONException e) {
@@ -228,16 +230,16 @@ public class UserSettings extends AppCompatActivity {
         String confirmPassword = this.confirmPasswordView.getText().toString();
 
         if ((name.isEmpty()) || (surname.isEmpty()) || (username.isEmpty()) || (password.isEmpty()) || (confirmPassword.isEmpty())) {
-            Toast.makeText(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
             return false;
         } else if (username.length() < 3) {
-            Toast.makeText(getApplicationContext(), "USERNAME TROPPO CORTO!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "USERNAME TROPPO CORTO!", Toast.LENGTH_LONG).show();
             return false;
         } else if (password.length() < 9) {
-            Toast.makeText(getApplicationContext(), "PASSWORD TROPPO CORTA!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "PASSWORD TROPPO CORTA!", Toast.LENGTH_LONG).show();
             return false;
         } else if (!(password.equals(confirmPassword))) {
-            Toast.makeText(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
     }
@@ -262,7 +264,7 @@ public class UserSettings extends AppCompatActivity {
                     if ((userUsername.equalsIgnoreCase(usernameView.getText().toString())) || (response.getBoolean("error"))) {
                         showAlertConfirm();
                     } else {
-                        Toast.makeText(getApplicationContext(), "USERNAME ESISTENTE!!", Toast.LENGTH_LONG).show();
+                        Toasty.error(getApplicationContext(), "USERNAME ESISTENTE!", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (JSONException e) {
@@ -273,7 +275,7 @@ public class UserSettings extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -289,7 +291,7 @@ public class UserSettings extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 updateUser();
-                Toast.makeText(getApplicationContext(), "MODIFICHE SALVATE CON SUCCESSO!", Toast.LENGTH_LONG).show();
+                Toasty.success(getApplicationContext(), "MODIFICHE SALVATE CON SUCCESSO!", Toast.LENGTH_LONG).show();
                 goToUserProfile();
             }
         });
@@ -332,7 +334,7 @@ public class UserSettings extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);

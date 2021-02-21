@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     private CircularImageView avatar;
@@ -127,7 +129,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         if (imageUri != null) {
                             uploadBitmap(imageSelected, response.getJSONObject("userdata").getString("_id"));
                         }
-                        Toast.makeText(getApplicationContext(), "BENVENUTO!", Toast.LENGTH_LONG).show();
+                        Toasty.info(getApplicationContext(), "BENVENUTO!", Toast.LENGTH_LONG).show();
 
                         JSONObject user = response.getJSONObject("userdata");
                         user.put("session", true);
@@ -136,10 +138,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     } else {
                         if ((response.getJSONObject("message").getJSONObject("keyPattern").has("email")) &&
                                 (response.getJSONObject("message").getJSONObject("keyPattern").getInt("email") == 1)) {
-                            Toast.makeText(getApplicationContext(), "EMAIL ESISTENTE!", Toast.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(), "EMAIL ESISTENTE!", Toast.LENGTH_LONG).show();
                         } else if ((response.getJSONObject("message").getJSONObject("keyPattern").has("username")) &&
                                 (response.getJSONObject("message").getJSONObject("keyPattern").getInt("username") == 1)) {
-                            Toast.makeText(getApplicationContext(), "USERNAME ESISTENTE!", Toast.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(), "USERNAME ESISTENTE!", Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (JSONException e) {
@@ -150,7 +152,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -167,19 +169,19 @@ public class RegistrationActivity extends AppCompatActivity {
         String confirmPassword = this.confirmPassword.getText().toString();
 
         if ((name.isEmpty()) || (surname.isEmpty()) || (username.isEmpty()) || (email.isEmpty()) || (password.isEmpty()) || (confirmPassword.isEmpty())) {
-            Toast.makeText(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
             return false;
         } else if (username.length() < 3) {
-            Toast.makeText(getApplicationContext(), "USERNAME TROPPO CORTO!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "USERNAME TROPPO CORTO!", Toast.LENGTH_LONG).show();
             return false;
         } else if (!(email.contains("@")) || (!(email.contains(".")))) {
-            Toast.makeText(getApplicationContext(), "INSERIRE UNA EMAIL VALIDA!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "INSERIRE UNA EMAIL VALIDA!", Toast.LENGTH_LONG).show();
             return false;
         } else if (password.length() < 9) {
-            Toast.makeText(getApplicationContext(), "PASSWORD TROPPO CORTA!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "PASSWORD TROPPO CORTA!", Toast.LENGTH_LONG).show();
             return false;
         } else if (!(password.equals(confirmPassword))) {
-            Toast.makeText(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
 
@@ -241,8 +243,8 @@ public class RegistrationActivity extends AppCompatActivity {
 //                        }
 //                        } else {
 //
-                        Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
-//                        }
+                       /* Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
+//                        }*/
                     }
                 },
                 new Response.ErrorListener() {

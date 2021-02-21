@@ -31,6 +31,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import es.dmoral.toasty.Toasty;
+
 public class LoginActivity extends AppCompatActivity {
 
     private TextView registerButton;
@@ -39,7 +41,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
 
     private TextView lostPassword;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,10 @@ public class LoginActivity extends AppCompatActivity {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
             if (userLogged.getBoolean("session")) {
                 goToHome(userLogged);
-            } else {
-                Toast.makeText(getApplicationContext(), "Accedi", Toast.LENGTH_LONG).show();
+
+                Toasty.info(getApplicationContext(), "BENTORNATO!", Toast.LENGTH_LONG).show();
+           /* } else {
+                Toast.makeText(getApplicationContext(), "Accedi", Toast.LENGTH_LONG).show();*/
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,8 +125,8 @@ public class LoginActivity extends AppCompatActivity {
         goToHomeIntent.putExtra("user", userInfo.toString());
         this.startActivity(goToHomeIntent);
         this.finish();
+        Toasty.info(getApplicationContext(), "BENTORNATO!", Toast.LENGTH_LONG).show();
     }
-
 
     public void signInClick(View view) {
         this.checkCredential(emailEditText.getText().toString().trim(), passwordEditText.getText().toString());
@@ -189,15 +192,14 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     if (!response.getBoolean("password")) {
                         passwordEditText.setError("Password errata");
-                        Toast.makeText(getApplicationContext(), "errore", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "errore", Toast.LENGTH_LONG).show();
                     }
                     if (!response.getBoolean("email")) {
                         emailEditText.setError("Email non trovata");
-                        Toast.makeText(getApplicationContext(), "errore", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "errore", Toast.LENGTH_LONG).show();
                     }
 
-                    if (response.getBoolean("password") &&
-                            response.getBoolean("email")) {
+                    if (response.getBoolean("password") && response.getBoolean("email")) {
                         JSONObject user = response.getJSONObject("user");
                         user.put("session", true);
 
@@ -236,47 +238,51 @@ public class LoginActivity extends AppCompatActivity {
     public void onClickLostPassword(View view) {
 
         String userEmail = this.emailEditText.getText().toString();
+        if (userEmail.length() > 0) {
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JSONObject jsonBody = null;
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            JSONObject jsonBody = null;
 
-        try {
-            jsonBody = new JSONObject("{\"email\":" + userEmail + "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
+            try {
+                jsonBody = new JSONObject("{\"email\":" + userEmail + "}");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            final String url = "https://whynothere-app.herokuapp.com/user/getuserbyemail";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    try {
+
+                        if (response.getBoolean("error")) {
+                            Toasty.error(getApplicationContext(), "EMAIL INESISTENTE!", Toast.LENGTH_LONG).show();
+                        } else {
+
+                            JSONObject user = response.getJSONObject("user");
+                            String userLostPassword = user.getString("password");
+
+                            JavaMailAPI javaMailAPI = new JavaMailAPI(getApplicationContext(), userEmail, "Recupero password", "La tua password è: " + userLostPassword);
+                            javaMailAPI.execute();
+
+                            Toasty.info(getApplicationContext(), "TI ABBIAMO INVIATO UN'EMAIL!", Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+
         }
 
-        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyemail";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-
-                try {
-
-                    if (response.getBoolean("error")) {
-                        Toast.makeText(getApplicationContext(), "EMAIL INESISTENTE!", Toast.LENGTH_LONG).show();
-                    } else {
-
-                        JSONObject user = response.getJSONObject("user");
-                        String userLostPassword = user.getString("password");
-
-                        JavaMailAPI javaMailAPI = new JavaMailAPI(getApplicationContext(), userEmail, "Recupero password", "La tua password è: " + userLostPassword);
-                        javaMailAPI.execute();
-
-                        Toast.makeText(getApplicationContext(), "TI ABBIAMO INVIATO UN'EMAIL!", Toast.LENGTH_LONG).show();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-        requestQueue.add(jsonObjectRequest);
     }
 
     public void onClickBackground(View view) {

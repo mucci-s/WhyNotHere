@@ -75,6 +75,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -120,7 +122,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         // Retrieve location and camera position from saved instance state.
 
 
-        //      updateValuesFromBundle(savedInstanceState);
+        //updateValuesFromBundle(savedInstanceState);
 
         setContentView(R.layout.activity_maps_home);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -378,7 +380,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableUserLocation();
             } else {
-                Toast.makeText(MapsHomeActivity.this, "Permission needed", Toast.LENGTH_LONG).show();
+                Toasty.error(MapsHomeActivity.this, "Permission needed", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -555,7 +557,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
                     } else {
-                        Toast.makeText(getApplicationContext(), "non ci sono luoghi nelle vicinanze", Toast.LENGTH_LONG).show();
+                        Toasty.info(getApplicationContext(), "NON CI SONO LUOGHI NELLE VICINANZE!", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

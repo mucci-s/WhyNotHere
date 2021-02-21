@@ -70,6 +70,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
@@ -261,7 +263,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
     private boolean checkComment() {
         if (this.addCommentEditText.getText().toString().length() == 0) {
-            Toast.makeText(getApplicationContext(), "INSERIRE UN COMMENTO VALIDO!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "INSERIRE UN COMMENTO VALIDO!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
     }
@@ -297,13 +299,13 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                     e.printStackTrace();
                 }
                 addCommentEditText.getText().clear();
-                Toast.makeText(getApplicationContext(), "Aggiunto con successo!", Toast.LENGTH_LONG).show();
+                Toasty.success(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);

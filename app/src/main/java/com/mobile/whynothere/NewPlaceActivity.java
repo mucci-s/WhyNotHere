@@ -78,6 +78,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
+import es.dmoral.toasty.Toasty;
+
 
 public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -370,6 +372,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onResponse(JSONObject response) {
 
+                title.getText().clear();
+                description.getText().clear();
+                Toasty.success(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
                 try {
                     uploadBitmap(images, images.size(), response.getString("_id"));
                 } catch (JSONException e) {
@@ -380,7 +385,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -493,13 +498,13 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     private boolean checkField() {
 
         if ((this.title.getText().toString().isEmpty()) || (this.description.getText().toString().isEmpty()) || (this.images.size() == 0)) {
-            Toast.makeText(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
             return false;
         } else if ((title.length() < 3) || (title.length() > 25)) {
-            Toast.makeText(getApplicationContext(), "INSERIRE UN TITOLO VALIDO!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "INSERIRE UN TITOLO VALIDO!", Toast.LENGTH_LONG).show();
             return false;
         } else if (description.length() > 150) {
-            Toast.makeText(getApplicationContext(), "DESCRIZIONE TROPPO LUNGA!", Toast.LENGTH_LONG).show();
+            Toasty.error(getApplicationContext(), "DESCRIZIONE TROPPO LUNGA!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
 
