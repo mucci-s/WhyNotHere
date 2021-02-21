@@ -4,13 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -51,6 +56,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.models.Comment;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
+import com.mobile.whynothere.utility.adapters.CustomRecyclerAdaptor;
+import com.mobile.whynothere.utility.adapters.CustomRecyclerViewPlaceAdaptor;
 import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
 
 import org.json.JSONException;
@@ -100,6 +107,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private String descriptionPlace;
     private String authorID;
     private String nameAuthor;
+    private ImageButton favoriteIcon;
 
 
     private EditText addCommentEditText;
@@ -107,8 +115,10 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     GridView gridView;
     ListView listCommentView;
     private CircularImageView imageAuthor, userLoggedImage;
+    private RecyclerView imageRecycler;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,22 +132,26 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         this.description = findViewById(R.id.placeDescriptionID);
         this.author = findViewById(R.id.placeAuthorID);
         this.userLoggedImage = findViewById(R.id.avatarUserLogged);
-
+        this.favoriteIcon = findViewById(R.id.favoriteiconID);
+        this.imageRecycler = findViewById(R.id.list1);
         this.addCommentButton = findViewById(R.id.addCommentButtonID);
         this.addCommentEditText = findViewById(R.id.addCommentID);
         setFotoDavide();
-
-        gridView = findViewById(R.id.imageGrid);
-        setDefaultImages(gridView);
+//
+//        gridView = findViewById(R.id.imageGrid);
+//        setDefaultImages(gridView);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //   showDialogBox(position);
-            }
-        });
+
+
+
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //   showDialogBox(position);
+//            }
+//        });
 
         listCommentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -149,10 +163,19 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
+        favoriteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // addFavoritePost(userId,placeID);
+                favoriteIcon.setImageDrawable(getDrawable(R.drawable.ic_favorite_red));
+            }
+        });
+
         //addCommentButton.setBackgroundResource(R.drawable.custom_insert_comment);
 
         addCommentButton.setOnTouchListener(new View.OnTouchListener() {
 
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -182,6 +205,10 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         super.onStart();
         placeID = getIntent().getStringExtra("placeId");
         getPlace(placeID);
+        LinearLayoutManager manager1 = new LinearLayoutManager(this);
+        manager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        imageRecycler.setLayoutManager(manager1);
+//        checkFavorite(userId);
 
 
     }
@@ -312,6 +339,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                     getPlaceLocation();
                     title.setText(titlePlace);
                     description.setText(descriptionPlace);
+                    CustomRecyclerViewPlaceAdaptor imageAdaptor = new CustomRecyclerViewPlaceAdaptor(ViewPlaceActivity.this,place.getJSONArray("photos"));
+                    imageRecycler.setAdapter(imageAdaptor);
                     getAuthor(authorID);
 
                     ListView listView = findViewById(R.id.lista);
@@ -370,11 +399,75 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private void checkFavorite(String authorId) {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"_id\":" + authorId + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONObject user = response.getJSONObject("user");
+                    if (user.getJSONArray("favourites_posts").toString().contentEquals(placeID));
+                    favoriteIcon.setImageDrawable(getDrawable(R.drawable.ic_favorite_red));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
 
     public void setDefaultImages(GridView gridView) {
         DefaultImageAdaptor defaultImageAdaptor = new DefaultImageAdaptor(defaultImages, this);
         gridView.setAdapter(defaultImageAdaptor);
         gridView.setEnabled(false);
+    }
+
+    private void addFavoritePost(String userId ,String placeID) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"_id\":" + userId + " , \"favourite_post\":" + placeID + " }");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/post/addfavoritepost";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Toast.makeText(getApplicationContext(), "INSERIRE UasdasdasdNO!", Toast.LENGTH_LONG).show();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
 
     /*

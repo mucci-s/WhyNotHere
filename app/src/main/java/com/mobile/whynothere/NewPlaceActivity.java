@@ -109,7 +109,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     private String userID;
 
-    RecyclerView imageRecycler;
+    private RecyclerView imageRecycler;
     private Marker positionMarker;
     private ConstraintLayout imageLayout;
     private ProgressBar progressBar;
@@ -370,9 +370,6 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onResponse(JSONObject response) {
 
-                title.getText().clear();
-                description.getText().clear();
-                Toast.makeText(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
                 try {
                     uploadBitmap(images, images.size(), response.getString("_id"));
                 } catch (JSONException e) {
@@ -428,6 +425,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                             uploadBitmap(data, items - 1, newpostID);
                         } else {
                             //mainCategoryRecycler.setAdapter(new CategoryItemRecyclerAdapter(getApplicationContext(),images));
+                            title.getText().clear();
+                            description.getText().clear();
+                            Toast.makeText(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
                             Intent goToHome = new Intent(getBaseContext(), MapsHomeActivity.class);
                             startActivity(goToHome);
                         }
