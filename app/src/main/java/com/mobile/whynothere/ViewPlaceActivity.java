@@ -186,6 +186,18 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
+        imageAuthor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewPlaceActivity.this, UserProfileActivity.class);
+                try {
+                    intent.putExtra("userId",place.getString("author"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                startActivity(intent);
+            }
+        });
         //addCommentButton.setBackgroundResource(R.drawable.custom_insert_comment);
 
         addCommentButton.setOnTouchListener(new View.OnTouchListener() {
