@@ -532,7 +532,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         if ((this.title.getText().toString().isEmpty()) || (this.description.getText().toString().isEmpty()) || (this.images.size() == 0)) {
             Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
             return false;
-        } else if ((title.length() < 3) || (title.length() > 30)) {
+        } else if ((title.length() < 3) || (title.length() > 20)) {
             Toasty.error(getApplicationContext(), "INSERIRE UN TITOLO VALIDO!", Toast.LENGTH_LONG).show();
             return false;
         } else if (description.length() > 150) {

@@ -220,6 +220,7 @@ public class UserSettings extends AppCompatActivity {
         String username = this.usernameView.getText().toString();
         String password = this.passwordView.getText().toString();
         String confirmPassword = this.confirmPasswordView.getText().toString();
+        String bio = this.bioView.getText().toString();
 
         if ((name.isEmpty()) || (surname.isEmpty()) || (username.isEmpty()) || (password.isEmpty()) || (confirmPassword.isEmpty())) {
             Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
@@ -233,7 +234,10 @@ public class UserSettings extends AppCompatActivity {
         } else if (!(password.equals(confirmPassword))) {
             Toasty.error(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
             return false;
-        } else return true;
+        } else if (bio.length() > 40) {
+            Toasty.error(getApplicationContext(), "BIO TROPPO LUNGA!", Toast.LENGTH_LONG).show();
+            return false;
+        }else return true;
     }
 
     public void checkUsername() {

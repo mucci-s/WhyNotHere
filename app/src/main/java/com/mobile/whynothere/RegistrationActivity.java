@@ -67,16 +67,16 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        avatar = (CircularImageView) this.findViewById(R.id.listProfileAvatarID);
-        name = (EditText) this.findViewById(R.id.nameID);
-        surname = (EditText) this.findViewById(R.id.surnameID);
-        username = (EditText) this.findViewById(R.id.usernameID);
-        email = (EditText) this.findViewById(R.id.emailID);
-        password = (EditText) this.findViewById(R.id.passwordID);
-        confirmPassword = (EditText) this.findViewById(R.id.confirmPasswordID);
-        bio = (EditText) this.findViewById(R.id.bioID);
-        registrationButton = (Button) this.findViewById(R.id.registrationButtonID);
-        loginTextView = (TextView) this.findViewById(R.id.loginTextViewID);
+        avatar = this.findViewById(R.id.listProfileAvatarID);
+        name = this.findViewById(R.id.nameID);
+        surname = this.findViewById(R.id.surnameID);
+        username = this.findViewById(R.id.usernameID);
+        email = this.findViewById(R.id.emailID);
+        password = this.findViewById(R.id.passwordID);
+        confirmPassword = this.findViewById(R.id.confirmPasswordID);
+        bio = this.findViewById(R.id.bioID);
+        registrationButton = this.findViewById(R.id.registrationButtonID);
+        loginTextView = this.findViewById(R.id.loginTextViewID);
     }
 
     public void onClickAvatar(View view) {
