@@ -557,7 +557,7 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
                     } else {
-                        Toasty.info(getApplicationContext(), "NON CI SONO LUOGHI NELLE VICINANZE!", Toast.LENGTH_LONG).show();
+                        Toasty.info(getApplicationContext(), "NON CI SONO LUOGHI NELLE VICINANZE!", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

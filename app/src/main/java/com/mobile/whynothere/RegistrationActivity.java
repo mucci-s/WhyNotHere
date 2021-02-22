@@ -172,6 +172,7 @@ public class RegistrationActivity extends AppCompatActivity {
         String email = this.email.getText().toString();
         String password = this.password.getText().toString();
         String confirmPassword = this.confirmPassword.getText().toString();
+        String bio = this.bio.getText().toString();
 
         if ((name.isEmpty()) || (surname.isEmpty()) || (username.isEmpty()) || (email.isEmpty()) || (password.isEmpty()) || (confirmPassword.isEmpty())) {
             Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
@@ -187,6 +188,9 @@ public class RegistrationActivity extends AppCompatActivity {
             return false;
         } else if (!(password.equals(confirmPassword))) {
             Toasty.error(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (bio.length() > 40) {
+            Toasty.error(getApplicationContext(), "BIO TROPPO LUNGA!", Toast.LENGTH_LONG).show();
             return false;
         } else return true;
 
@@ -214,7 +218,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void uploadBitmap(final Bitmap image, String UserID) {
 
-        Bitmap reducedBitmap = ImageResizer.reduceBitmapSize(image,240000);
+        Bitmap reducedBitmap = ImageResizer.reduceBitmapSize(image, 240000);
         byte[] redusedFile = getBitmapFile(reducedBitmap);
 
 
@@ -252,6 +256,7 @@ public class RegistrationActivity extends AppCompatActivity {
         Volley.newRequestQueue(RegistrationActivity.this).add(volleyMultipartRequest);
 
     }
+
     public void setUserSession(String userId) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -312,7 +317,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        reducedBitmap.compress(Bitmap.CompressFormat.PNG,0, bos);
+        reducedBitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
         byte[] bitmapdata = bos.toByteArray();
 
         try {

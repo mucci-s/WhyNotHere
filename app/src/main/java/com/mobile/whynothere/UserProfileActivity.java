@@ -76,9 +76,11 @@ public class UserProfileActivity extends AppCompatActivity {
         this.gridView = this.findViewById(R.id.imageGridID);
 
         this.userPassedId = getIntent().getStringExtra("userId");
-        if(this.userPassedId == null){
-            this.getUserData(userId);
-        }else{
+        if (this.userPassedId == null) {
+            this.getUserData(this.userId);
+        } else if (this.userId.equals(this.userPassedId)) {
+            this.getUserData(this.userId);
+        } else {
             this.getUserData(userPassedId);
             this.settingsButton.setVisibility(View.INVISIBLE);
         }
@@ -116,9 +118,11 @@ public class UserProfileActivity extends AppCompatActivity {
         this.getUserId();
 
         this.userPassedId = getIntent().getStringExtra("userId");
-        if(this.userPassedId == null){
-            this.getUserData(userId);
-        }else{
+        if (this.userPassedId == null) {
+            this.getUserData(this.userId);
+        } else if (this.userId.equals(this.userPassedId)) {
+            this.getUserData(this.userId);
+        } else {
             this.getUserData(userPassedId);
             this.settingsButton.setVisibility(View.INVISIBLE);
         }
@@ -128,8 +132,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    public void getUserId(){
-        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
+    public void getUserId() {
+        SharedPreferences userPreferences = getSharedPreferences("session", MODE_PRIVATE);
         try {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
             this.userId = userLogged.getString("_id");
@@ -208,7 +212,7 @@ public class UserProfileActivity extends AppCompatActivity {
         this.userPhotoFragment = new UserPhotoFragment(userId);
         //Quando si va indietro potrebbe crashare, vedere video su yt
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
-      //  userPhotoFragment.setPics(userId);
+        //  userPhotoFragment.setPics(userId);
     }
 
     public void onClickLikedPlaces(View view) {
