@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.R;
+import com.mobile.whynothere.utility.GetImageFromUrl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -131,6 +132,7 @@ public class CustomListAdapter extends BaseAdapter {
                     username = user.getString("username");
                     icon = user.getString("photo_profile");
                     holder.authorNameView.setText(username);
+                    new GetImageFromUrl(holder.authorImageView,context).execute(icon);
                     Log.i("Username +", username);
                 } catch (JSONException e) {
                     e.printStackTrace();

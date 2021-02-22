@@ -4,8 +4,12 @@ package com.mobile.whynothere.utility.adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +23,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mobile.whynothere.R;
 import com.mobile.whynothere.UserProfileActivity;
+import com.mobile.whynothere.utility.GetImageFromUrl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomRecyclerViewPlaceAdaptor.MyViewHolder> {
 
@@ -51,7 +60,6 @@ public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomR
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
             });
         }
@@ -67,16 +75,35 @@ public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomR
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+//            Glide.with(context)
+//                    .load("https://res.cloudinary.com/whynothereimages/image/upload/v1613868470/post_image/6031adb30fb5fe0004d1ae15/icelpyghelbfxoqzyff5.png")
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .placeholder(R.drawable.progress_bar)
+//                    .into(holder.mImage);
+
+          holder.mImage.setImageResource(R.drawable.progress_bar);
         try {
-            Glide.with(context)
-                    .load(photos.getString(position))
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .placeholder(R.drawable.loader_bar)
-                    .into(holder.mImage);
+            new GetImageFromUrl(holder.mImage, context).execute(photos.getString(position));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        holder.mImage.setImageURI(picUri);
+
+
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+//                .permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
+//
+//        Bitmap bmp = null;
+//        try {
+//            URL url = new URL("https://res.cloudinary.com/whynothereimages/image/upload/v1613868470/post_image/6031adb30fb5fe0004d1ae15/icelpyghelbfxoqzyff5.png");
+//            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        holder.mImage.setImageBitmap(bmp);
+
+
 
     }
 
@@ -93,17 +120,36 @@ public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomR
 
         ImageView imageView = dialog.findViewById(R.id.img);
 
-        Glide.with(context)
-                .load(image)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .placeholder(R.drawable.loader_bar)
-                .into(imageView);
+        imageView.setImageResource(R.drawable.progress_bar);
 
-
-
-
-        dialog.show();
     }
+
+//    Bitmap bitmap;
+//
+//    public class GetImageFromUrl extends AsyncTask<String, Void, Bitmap> {
+//        ImageView imageView;
+//        public GetImageFromUrl(ImageView img){
+//            this.imageView = img;
+//        }
+//        @Override
+//        protected Bitmap doInBackground(String... url) {
+//            String stringUrl = url[0];
+//            bitmap = null;
+//            InputStream inputStream;
+//            try {
+//                inputStream = new java.net.URL(stringUrl).openStream();
+//                bitmap = BitmapFactory.decodeStream(inputStream);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return bitmap;
+//        }
+//        @Override
+//        protected void onPostExecute(Bitmap bitmap){
+//            super.onPostExecute(bitmap);
+//            imageView.setImageBitmap(bitmap);
+//        }
+//    }
 
 
 }

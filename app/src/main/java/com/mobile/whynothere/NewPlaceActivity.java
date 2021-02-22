@@ -26,6 +26,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
@@ -61,6 +62,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.mobile.whynothere.utility.ImageResizer;
 import com.mobile.whynothere.utility.VolleyMultipartRequest;
 import com.mobile.whynothere.utility.adapters.CustomRecyclerAdaptor;
 
@@ -68,7 +70,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -119,6 +123,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
     List<Bitmap> images = new ArrayList<>(Arrays.<Bitmap>asList());
     List<Uri> uriImages = new ArrayList<>(Arrays.<Uri>asList());
+    List<byte[]> fileListImage = new ArrayList<>(Arrays.<byte[]>asList());
+
 
     @Override
     protected void onStart() {
@@ -301,6 +307,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                     try {
                         InputStream is = getContentResolver().openInputStream(uriImages.get(i));
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        Bitmap reducedBitmap = ImageResizer.reduceBitmapSize(bitmap,240000);
+                        byte[] redusedFile = getBitmapFile(reducedBitmap);
+                        fileListImage.add(redusedFile);
                         images.add(bitmap);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -310,6 +319,9 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                 try {
                     InputStream is = getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    Bitmap reducedBitmap = ImageResizer.reduceBitmapSize(bitmap,240000);
+                    byte[] redusedFile = getBitmapFile(reducedBitmap);
+                    fileListImage.add(redusedFile);
                     images.add(bitmap);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -318,6 +330,29 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+    private byte[] getBitmapFile(Bitmap reducedBitmap) {
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "reduced_file");
+
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        reducedBitmap.compress(Bitmap.CompressFormat.PNG,0, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        try {
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+            return bitmapdata;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmapdata;
+
+    }
 
 
 
@@ -372,11 +407,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onResponse(JSONObject response) {
 
-                title.getText().clear();
-                description.getText().clear();
-                Toasty.success(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
                 try {
-                    uploadBitmap(images, images.size(), response.getString("_id"));
+                    uploadBitmap(fileListImage, fileListImage.size(), response.getString("_id"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -402,7 +434,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
-    private void uploadBitmap(final List<Bitmap> data, final int items, String newpostID) {
+    private void uploadBitmap(final List<byte[]> data, final int items, String newpostID) {
 //        Uri picUri = null;
 //        CustomRecyclerAdaptor adaptor1 = new CustomRecyclerAdaptor(getApplicationContext(), data);
 //        imageRecycler.setAdapter(adaptor1);
@@ -461,7 +493,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
                 long imagename = System.currentTimeMillis();
-                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(data.get(items - 1))));
+                params.put("image", new DataPart(imagename + ".png", data.get(items - 1)));
                 return params;
             }
         };

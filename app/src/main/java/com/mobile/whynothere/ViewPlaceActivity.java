@@ -44,6 +44,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,6 +57,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.whynothere.models.Comment;
+import com.mobile.whynothere.utility.GetImageFromUrl;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
 import com.mobile.whynothere.utility.adapters.CustomRecyclerAdaptor;
 import com.mobile.whynothere.utility.adapters.CustomRecyclerViewPlaceAdaptor;
@@ -110,13 +113,16 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private String authorID;
     private String nameAuthor;
     private ImageButton favoriteIcon;
+    private String userPhoto;
+    private String userEmail;
 
 
     private EditText addCommentEditText;
     private ImageView addCommentButton;
     GridView gridView;
     ListView listCommentView;
-    private CircularImageView imageAuthor, userLoggedImage;
+    private CircularImageView imageAuthor;
+    private CircularImageView userLoggedImage;
     private RecyclerView imageRecycler;
 
 
@@ -126,25 +132,32 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewplace);
 
-        getUserId();
+
 
         this.listCommentView = findViewById(R.id.lista);
         this.imageAuthor = findViewById(R.id.placeAuthorProfileAvatarID);
         this.title = findViewById(R.id.placeTitleID);
         this.description = findViewById(R.id.placeDescriptionID);
         this.author = findViewById(R.id.placeAuthorID);
-        this.userLoggedImage = findViewById(R.id.avatarUserLogged);
+        this.userLoggedImage = findViewById(R.id.avatarUserLogged2);
         this.favoriteIcon = findViewById(R.id.favoriteiconID);
         this.imageRecycler = findViewById(R.id.list1);
         this.addCommentButton = findViewById(R.id.addCommentButtonID);
         this.addCommentEditText = findViewById(R.id.addCommentID);
-        setFotoDavide();
+
+
+        this.userLoggedImage.setImageResource(R.drawable.ic_profile);
+        getUserId();
+
 //
 //        gridView = findViewById(R.id.imageGrid);
 //        setDefaultImages(gridView);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
+
+
+
 
 
 
@@ -168,7 +181,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         favoriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // addFavoritePost(userId,placeID);
+                addFavoritePost(userId,placeID);
                 favoriteIcon.setImageDrawable(getDrawable(R.drawable.ic_favorite_red));
             }
         });
@@ -197,6 +210,10 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         try {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
             this.userId = userLogged.getString("_id");
+            this.userPhoto = userLogged.getString("photo_profile");
+            this.userEmail = userLogged.getString("email");
+            this.userLoggedImage.setImageResource(R.drawable.progress_bar);
+            new GetImageFromUrl(this.userLoggedImage, getApplicationContext()).execute(userLogged.getString("photo_profile"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -210,8 +227,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         LinearLayoutManager manager1 = new LinearLayoutManager(this);
         manager1.setOrientation(LinearLayoutManager.HORIZONTAL);
         imageRecycler.setLayoutManager(manager1);
-//        checkFavorite(userId);
 
+       checkFavorite(userEmail,placeID);
 
     }
 
@@ -235,30 +252,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
             }, 500);
 
             //getComment();*/
-
-    }
-
-    private void setFotoDavide() {
-        URL url = null;
-        URL url2 = null;
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            url = new URL("https://instagram.fcia2-1.fna.fbcdn.net/v/t51.2885-19/s320x320/119672999_449071479377091_6700639640968533977_n.jpg?_nc_ht=instagram.fcia2-1.fna.fbcdn.net&_nc_ohc=1soJCsVgJKkAX-Qg5-9&tp=1&oh=dc6741a9184ea11651c695b5954e7a28&oe=60567A7B");
-            url2 = new URL("https://instagram.fcia2-1.fna.fbcdn.net/v/t51.2885-19/s320x320/121218074_1083846702059572_8582352636631822576_n.jpg?_nc_ht=instagram.fcia2-1.fna.fbcdn.net&_nc_ohc=_hGUpK2WXBYAX9BjkbD&tp=1&oh=2640a217b45b82e273b299aa21120358&oe=6055645A");
-
-            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            imageAuthor.setImageBitmap(bmp);
-
-            Bitmap bmp1 = BitmapFactory.decodeStream(url2.openConnection().getInputStream());
-            userLoggedImage.setImageBitmap(bmp1);
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private boolean checkComment() {
@@ -305,6 +298,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
             @Override
             public void onErrorResponse(VolleyError error) {
+
                 Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
             }
         });
@@ -341,6 +335,11 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                     getPlaceLocation();
                     title.setText(titlePlace);
                     description.setText(descriptionPlace);
+
+                    if(authorID.equalsIgnoreCase(userId)){
+                        favoriteIcon.setVisibility(View.INVISIBLE);
+                    }
+
                     CustomRecyclerViewPlaceAdaptor imageAdaptor = new CustomRecyclerViewPlaceAdaptor(ViewPlaceActivity.this,place.getJSONArray("photos"));
                     imageRecycler.setAdapter(imageAdaptor);
                     getAuthor(authorID);
@@ -386,43 +385,8 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
                     JSONObject user = response.getJSONObject("user");
                     nameAuthor = user.getString("username");
                     author.setText(nameAuthor);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        requestQueue.add(jsonObjectRequest);
-
-    }
-
-    private void checkFavorite(String authorId) {
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JSONObject jsonBody = null;
-
-        try {
-            jsonBody = new JSONObject("{\"_id\":" + authorId + "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-
-                try {
-                    JSONObject user = response.getJSONObject("user");
-                    if (user.getJSONArray("favourites_posts").toString().contentEquals(placeID));
-                    favoriteIcon.setImageDrawable(getDrawable(R.drawable.ic_favorite_red));
+                    imageAuthor.setImageResource(R.drawable.progress_bar);
+                    new GetImageFromUrl(imageAuthor, getApplicationContext()).execute(user.getString("photo_profile"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -439,11 +403,7 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    public void setDefaultImages(GridView gridView) {
-        DefaultImageAdaptor defaultImageAdaptor = new DefaultImageAdaptor(defaultImages, this);
-        gridView.setAdapter(defaultImageAdaptor);
-        gridView.setEnabled(false);
-    }
+
 
     private void addFavoritePost(String userId ,String placeID) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -471,6 +431,44 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         });
         requestQueue.add(jsonObjectRequest);
     }
+
+
+    private void checkFavorite(String email, String placeID ) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject("{\"favourites_posts\":" + placeID +",\"email\":" + email + "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/user/checkiffavourite";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if(response.getJSONArray( "result").length() > 0) {
+                        if (response.getJSONArray("result").getJSONObject(0).getInt("count") == 1) {
+                            favoriteIcon.setClickable(false);
+                            favoriteIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_red));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+    }
+
 
     /*
     public void showDialogBox(final int image_pos){

@@ -53,6 +53,7 @@
 
                     <com.mikhaellopez.circularimageview.CircularImageView
                         android:id="@+id/placeAuthorProfileAvatarID"
+                        android:scaleType="centerCrop"
                         android:layout_width="61dp"
                         android:layout_height="56dp"
                         android:layout_alignParentTop="true"
@@ -234,16 +235,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:paddingBottom="5dp">
 
+<!--                <com.mikhaellopez.circularimageview.CircularImageView-->
+<!--                    android:id="@+id/avatarUserLogged"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:src="@drawable/progress_bar"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
                 <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/avatarUserLogged"
+                    android:id="@+id/avatarUserLogged2"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="8dp"
-                    android:src="@drawable/avatar_icon"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/progress_bar"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <EditText
                     android:id="@+id/addCommentID"
@@ -261,7 +276,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/addCommentButtonID"
-                    app:layout_constraintStart_toEndOf="@+id/avatarUserLogged"
+                    app:layout_constraintStart_toEndOf="@+id/avatarUserLogged2"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="InvalidId" />
 

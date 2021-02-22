@@ -26,7 +26,7 @@
             android:layout_height="45dp"
             android:layout_marginStart="2dp"
             android:src="@drawable/avatar_icon"
-            app:civ_border_color="#FF06FB"
+            app:civ_border="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

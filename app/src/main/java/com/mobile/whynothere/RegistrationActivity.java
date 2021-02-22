@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -27,12 +28,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mobile.whynothere.utility.ImageResizer;
 import com.mobile.whynothere.utility.VolleyMultipartRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -201,50 +206,23 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void signInAction(JSONObject user) {
-        SharedPreferences sessionPreferences = getSharedPreferences("session", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sessionPreferences.edit();
-        editor.putString("UserLogged", user.toString());
-        editor.apply();
+
 
         this.goToHome(user);
     }
 
 
     private void uploadBitmap(final Bitmap image, String UserID) {
-//        Uri picUri = null;
-//        CustomRecyclerAdaptor adaptor1 = new CustomRecyclerAdaptor(getApplicationContext(), data);
-//        imageRecycler.setAdapter(adaptor1);
-//        if (data.getClipData() != null) {
-//            picUri = data.getClipData().getItemAt(items - 1).getUri();
-//        } else if (data.getData() != null) {
-//            picUri = data.getData();
-//        }
-//        filePath = getPath(picUri);
-//        try {
-//            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
-//            images.add(bitmap);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
+        Bitmap reducedBitmap = ImageResizer.reduceBitmapSize(image,240000);
+        byte[] redusedFile = getBitmapFile(reducedBitmap);
 
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        //    Toast.makeText(getApplicationContext(),"Dentro respos" + itemCount, Toast.LENGTH_LONG).show();
-                        //   if (data.getClipData() != null) {
-//                        if (items > 1) {
-//                            uploadBitmap(data, items - 1, newpostID);
-//                        } else {
-//                            //mainCategoryRecycler.setAdapter(new CategoryItemRecyclerAdapter(getApplicationContext(),images));
-//                            Intent goToHome = new Intent(getBaseContext(), MapsHomeActivity.class);
-//                            startActivity(goToHome);
-//                        }
-//                        } else {
-//
-                       /* Toast.makeText(getApplicationContext(), "Dentro respos solo un immagine", Toast.LENGTH_LONG).show();
-//                        }*/
+                        setUserSession(UserID);
                     }
                 },
                 new Response.ErrorListener() {
@@ -266,7 +244,7 @@ public class RegistrationActivity extends AppCompatActivity {
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
                 long imagename = System.currentTimeMillis();
-                params.put("image", new DataPart(imagename + ".png", getFileDataFromDrawable(image)));
+                params.put("image", new DataPart(imagename + ".png", redusedFile));
                 return params;
             }
         };
@@ -274,6 +252,46 @@ public class RegistrationActivity extends AppCompatActivity {
         Volley.newRequestQueue(RegistrationActivity.this).add(volleyMultipartRequest);
 
     }
+    public void setUserSession(String userId) {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject(
+                    "{\"_id\":\"" + userId + "\" }");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject user = response.getJSONObject("user");
+                    SharedPreferences sessionPreferences = getSharedPreferences("session", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sessionPreferences.edit();
+                    user.put("session", true);
+                    editor.putString("UserLogged", user.toString());
+                    editor.apply();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toasty.error(getApplicationContext(), "ERRORE!" + error, Toast.LENGTH_LONG).show();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
 
     private byte[] getFileDataFromDrawable(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -286,6 +304,31 @@ public class RegistrationActivity extends AppCompatActivity {
         if (imm.isAcceptingText()) {
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
+    }
+
+
+    private byte[] getBitmapFile(Bitmap reducedBitmap) {
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "reduced_file");
+
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        reducedBitmap.compress(Bitmap.CompressFormat.PNG,0, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        try {
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+            return bitmapdata;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmapdata;
+
     }
 
 }
