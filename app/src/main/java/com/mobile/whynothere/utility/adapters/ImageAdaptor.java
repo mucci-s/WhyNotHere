@@ -27,24 +27,7 @@ public class ImageAdaptor extends BaseAdapter {
     String postPhotoUrl;
     private LayoutInflater layoutInflater;
     ImageView imageView;
-    public int[] arrayImage = {
-            R.drawable.avatar_icon,
-            R.drawable.logo_loginwhynothere,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon,
-            R.drawable.avatar_icon
-    };
+
 
 
     public ImageAdaptor( JSONArray posts,Context mContext) {

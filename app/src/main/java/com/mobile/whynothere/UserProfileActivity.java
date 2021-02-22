@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private String userUsername;
     private String userBio;
     private GridView gridView;
+    private LinearLayout navBarLayout;
+    private String userToUse;
 
     UserPhotoFragment userPhotoFragment;
     UserLikedPhotoFragment userLikedPhotoFragment;
@@ -74,15 +77,20 @@ public class UserProfileActivity extends AppCompatActivity {
         this.spottedPlacesButton = this.findViewById(R.id.profileSpottedPlacesID);
         this.likedPlacesButton = this.findViewById(R.id.profileLikedPlacesID);
         this.gridView = this.findViewById(R.id.imageGridID);
+        this.navBarLayout = this.findViewById(R.id.linearLayout);
+
 
         this.userPassedId = getIntent().getStringExtra("userId");
-        if (this.userPassedId == null) {
-            this.getUserData(this.userId);
-        } else if (this.userId.equals(this.userPassedId)) {
-            this.getUserData(this.userId);
-        } else {
+        if(this.userPassedId == null){
+            this.getUserData(userId);
+            this.userPhotoFragment = new UserPhotoFragment(userId);
+            this.navBarLayout.setVisibility(View.VISIBLE);
+
+        }else{
             this.getUserData(userPassedId);
+            this.userPhotoFragment = new UserPhotoFragment(userPassedId);
             this.settingsButton.setVisibility(View.INVISIBLE);
+            this.navBarLayout.setVisibility(View.INVISIBLE);
         }
 
         this.navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
@@ -105,7 +113,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        this.userPhotoFragment = new UserPhotoFragment(userId);
+
         this.fragmentManager = getSupportFragmentManager();
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
 
@@ -118,13 +126,15 @@ public class UserProfileActivity extends AppCompatActivity {
         this.getUserId();
 
         this.userPassedId = getIntent().getStringExtra("userId");
-        if (this.userPassedId == null) {
-            this.getUserData(this.userId);
-        } else if (this.userId.equals(this.userPassedId)) {
-            this.getUserData(this.userId);
-        } else {
+        if(this.userPassedId == null){
+            this.getUserData(userId);
+            this.navBarLayout.setVisibility(View.VISIBLE);
+
+        }else{
             this.getUserData(userPassedId);
             this.settingsButton.setVisibility(View.INVISIBLE);
+            this.navBarLayout.setVisibility(View.INVISIBLE);
+
         }
 
         this.navigationBar.setSelectedItemId(R.id.profile);
@@ -132,8 +142,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    public void getUserId() {
-        SharedPreferences userPreferences = getSharedPreferences("session", MODE_PRIVATE);
+    public void getUserId(){
+        SharedPreferences userPreferences = getSharedPreferences("session",MODE_PRIVATE);
         try {
             JSONObject userLogged = new JSONObject(userPreferences.getString("UserLogged", ""));
             this.userId = userLogged.getString("_id");
@@ -173,7 +183,10 @@ public class UserProfileActivity extends AppCompatActivity {
                     usernameView.setText(userUsername);
                     userBio = user.getString("bio");
                     bioView.setText(userBio);
+                    userToUse=user.getString("_id");
+
                     userPhotoFragment.setUserID(user.getString("_id"));
+
 
 //                    ImageAdaptor defaultImageAdaptor = new ImageAdaptor(getApplicationContext());
 //                    gridView.setAdapter(defaultImageAdaptor);
@@ -209,10 +222,10 @@ public class UserProfileActivity extends AppCompatActivity {
         this.spottedPlacesButton.setMaxHeight(2);
         this.spottedPlacesButton.setMaxWidth(2);
 
-        this.userPhotoFragment = new UserPhotoFragment(userId);
+        this.userPhotoFragment = new UserPhotoFragment(userToUse);
         //Quando si va indietro potrebbe crashare, vedere video su yt
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
-        //  userPhotoFragment.setPics(userId);
+      //  userPhotoFragment.setPics(userId);
     }
 
     public void onClickLikedPlaces(View view) {

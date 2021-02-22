@@ -21,8 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.mobile.whynothere.FullViewImage;
 import com.mobile.whynothere.R;
 import com.mobile.whynothere.UserProfileActivity;
+import com.mobile.whynothere.ViewPlaceActivity;
 import com.mobile.whynothere.utility.GetImageFromUrl;
 
 import org.json.JSONArray;
@@ -56,7 +58,9 @@ public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomR
                 public void onClick(View v) {
 
                     try {
-                        showDialogBox(photos.getString(getAdapterPosition()), context);
+                        Intent goToFullimage = new Intent(context, FullViewImage.class);
+                        goToFullimage.putExtra("image", photos.getString(getAdapterPosition()) );
+                        context.startActivity(goToFullimage);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -90,21 +94,6 @@ public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomR
         }
 
 
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-//                .permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-//
-//        Bitmap bmp = null;
-//        try {
-//            URL url = new URL("https://res.cloudinary.com/whynothereimages/image/upload/v1613868470/post_image/6031adb30fb5fe0004d1ae15/icelpyghelbfxoqzyff5.png");
-//            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        holder.mImage.setImageBitmap(bmp);
-
-
-
     }
 
 
@@ -123,33 +112,5 @@ public class CustomRecyclerViewPlaceAdaptor extends RecyclerView.Adapter<CustomR
         imageView.setImageResource(R.drawable.progress_bar);
 
     }
-
-//    Bitmap bitmap;
-//
-//    public class GetImageFromUrl extends AsyncTask<String, Void, Bitmap> {
-//        ImageView imageView;
-//        public GetImageFromUrl(ImageView img){
-//            this.imageView = img;
-//        }
-//        @Override
-//        protected Bitmap doInBackground(String... url) {
-//            String stringUrl = url[0];
-//            bitmap = null;
-//            InputStream inputStream;
-//            try {
-//                inputStream = new java.net.URL(stringUrl).openStream();
-//                bitmap = BitmapFactory.decodeStream(inputStream);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            return bitmap;
-//        }
-//        @Override
-//        protected void onPostExecute(Bitmap bitmap){
-//            super.onPostExecute(bitmap);
-//            imageView.setImageBitmap(bitmap);
-//        }
-//    }
-
 
 }

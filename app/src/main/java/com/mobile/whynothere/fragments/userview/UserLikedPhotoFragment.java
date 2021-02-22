@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
@@ -13,7 +14,7 @@ import com.mobile.whynothere.utility.adapters.ImageAdaptor;
 
 public class UserLikedPhotoFragment extends Fragment {
 
-    private GridView gridView;
+    private ImageView comingSoon;
 
     int[] defaultImages = {
             R.drawable.default_icon_place,
@@ -64,11 +65,11 @@ public class UserLikedPhotoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_user_photo, container, false);
+        View root = inflater.inflate(R.layout.fragment_userliked_photo, container, false);
 
-//        this.gridView = root.findViewById(R.id.imageGridID);
-//        this.setDefaultImages();
-
+       this.comingSoon = root.findViewById(R.id.comingSoonImage);
+       this.comingSoon.setImageDrawable(getResources().getDrawable(R.drawable.coming_soon));
+       this.comingSoon.setVisibility(View.VISIBLE);
         return root;
     }
 

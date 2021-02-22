@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,16 +14,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
-import android.os.StrictMode;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -44,8 +39,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,22 +49,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.mobile.whynothere.models.Comment;
 import com.mobile.whynothere.utility.GetImageFromUrl;
 import com.mobile.whynothere.utility.adapters.CustomListAdapter;
-import com.mobile.whynothere.utility.adapters.CustomRecyclerAdaptor;
 import com.mobile.whynothere.utility.adapters.CustomRecyclerViewPlaceAdaptor;
-import com.mobile.whynothere.utility.adapters.DefaultImageAdaptor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
@@ -155,8 +141,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
-
-
 
 
 
@@ -433,8 +417,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
             @Override
             public void onResponse(JSONObject response) {
-                Toast.makeText(getApplicationContext(), "INSERIRE UasdasdasdNO!", Toast.LENGTH_LONG).show();
-
             }
         }, new Response.ErrorListener() {
             @Override

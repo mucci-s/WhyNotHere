@@ -276,31 +276,6 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             }
 
-//            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-//
-//            SettingsClient settingsClient = LocationServices.getSettingsClient(MapsFineActivity.this);
-//            Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
-//
-//            task.addOnSuccessListener(MapsFineActivity.this, new OnSuccessListener<LocationSettingsResponse>() {
-//                @Override
-//                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-//                }
-//            });
-//
-//            task.addOnFailureListener(MapsFineActivity.this, new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    if (e instanceof ResolvableApiException) {
-//                        ResolvableApiException resolvable = (ResolvableApiException) e;
-//                        try {
-//                            resolvable.startResolutionForResult(MapsFineActivity.this, 51);
-//                        } catch (IntentSender.SendIntentException e1) {
-//                            e1.printStackTrace();
-//                        }
-//                    }
-//                }
-//            });
-
 
         }
 
@@ -664,95 +639,5 @@ public class MapsHomeActivity extends FragmentActivity implements OnMapReadyCall
         this.startActivity(goToPlaceView);
     }
 
-
 }
 
-
-//    private void updateValuesFromBundle(Bundle savedInstanceState) {
-//        if (savedInstanceState == null) {
-//            return;
-//        }
-//        if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
-//            requestingLocationUpdates = savedInstanceState.getBoolean(
-//                    REQUESTING_LOCATION_UPDATES_KEY);
-//        }
-//    }
-
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        stopLocationUpdates();
-//    }
-//
-//    private void stopLocationUpdates() {
-//        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-//    }
-//
-//
-//    protected void onResume() {
-//        super.onResume();
-//        if (requestingLocationUpdates) {
-//            startLocationUpdates();
-//        }
-//    }
-//
-//    private void startLocationUpdates() {
-//        checkLocationPermission();
-//        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-//                locationCallback,
-//                Looper.getMainLooper());
-//    }
-//
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        stopLocationUpdates();
-//    }
-
-
-/*
-
-    private void init(){
-
-
-
-        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || event.getAction() == KeyEvent.ACTION_DOWN
-                        || event.getAction() == KeyEvent.KEYCODE_ENTER ){
-                    geoLocate();
-                }
-                return false;
-            }
-        });
-    }
-
-
-    private void geoLocate(){
-        String serachLocation = searchBar.getText().toString();
-
-        Geocoder geocoder = new Geocoder(MapsFineActivity.this);
-        List<Address> locationList = new ArrayList<>();
-        try{
-            locationList = geocoder.getFromLocationName(serachLocation,1);
-        }catch (IOException e){
-            Log.e("TAG", "geolocate: IOException: " + e.getMessage() );
-        }
-
-        if(locationList.size() > 0){
-            Address location = locationList.get(0);
-            LatLng location_latlng = new LatLng(location.getLatitude(),location.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location_latlng, 14));
-            mMap.addMarker(new MarkerOptions().position(location_latlng));
-            Log.d("ADDRESS", "location found: " + location.toString());
-
-        }
-    }
-
-
-*/

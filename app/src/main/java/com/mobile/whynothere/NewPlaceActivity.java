@@ -32,6 +32,7 @@ import android.os.Looper;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,6 +63,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.mobile.whynothere.utility.ImageResizer;
 import com.mobile.whynothere.utility.VolleyMultipartRequest;
 import com.mobile.whynothere.utility.adapters.CustomRecyclerAdaptor;
@@ -120,6 +123,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
     private ConstraintLayout imageLayout;
     private ProgressBar progressBar;
     private LatLng newPositionMarker;
+    BottomNavigationView navigationBar;
 
     List<Bitmap> images = new ArrayList<>(Arrays.<Bitmap>asList());
     List<Uri> uriImages = new ArrayList<>(Arrays.<Uri>asList());
@@ -155,10 +159,34 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
 
         LinearLayoutManager manager1 = new LinearLayoutManager(this);
         manager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+
         imageRecycler.setLayoutManager(manager1);
         confirmButton = findViewById(R.id.confirmPlaceButtonID);
         progressBar = findViewById(R.id.progressBar);
         imageLayout = findViewById(R.id.imagesLayoutID);
+        navigationBar = (BottomNavigationView) findViewById(R.id.navigationBarNewPlace);
+        navigationBar.setSelectedItemId(R.id.addplace);
+
+        navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        Intent goToHome = new Intent(NewPlaceActivity.this, MapsHomeActivity.class);
+                        startActivity(goToHome);
+                        return true;
+
+                    case R.id.profile:
+                        Intent goToUserProfileIntent = new Intent(NewPlaceActivity.this, UserProfileActivity.class);
+                        startActivity(goToUserProfileIntent);
+                        return true;
+
+                    case R.id.addplace:
+                        return true;
+                }
+                return false;
+            }
+        });
 
 
         addPhoto.setOnClickListener(new View.OnClickListener() {
@@ -193,6 +221,11 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             outState.putParcelable(KEY_LOCATION, lastKnownLocation);
         }
         super.onSaveInstanceState(outState);
+    }
+
+    public void onClickNearlyButtonHome(View view) {
+        Intent goToHome = new Intent(NewPlaceActivity.this, MapsHomeActivity.class);
+        startActivity(goToHome);
     }
 
 
@@ -286,6 +319,8 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
     }
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)

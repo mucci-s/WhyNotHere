@@ -182,13 +182,13 @@
 
 
         <ImageButton
-            android:id="@+id/nearlyButtonID"
+            android:id="@+id/nearlyButtonIDNewPLace"
             android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_height="42dp"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/custom_button_white"
-            android:onClick="onClickNearlyButton"
+            android:onClick="onClickNearlyButtonHome"
             android:src="@drawable/ic_near"
             android:tint="@color/colorGreenGradientDark"
 

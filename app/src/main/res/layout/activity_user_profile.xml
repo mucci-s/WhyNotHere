@@ -39,6 +39,7 @@
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profileAvatarID"
+                app:civ_border="false"
                 android:layout_width="108dp"
                 app:civ_border="false"
                 android:layout_height="106dp"
