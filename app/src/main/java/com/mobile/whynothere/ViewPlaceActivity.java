@@ -135,22 +135,11 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
         this.userLoggedImage.setImageResource(R.drawable.ic_profile);
         getUserId();
 
-//
-//        gridView = findViewById(R.id.imageGrid);
-//        setDefaultImages(gridView);
+
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
 
-
-
-
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //   showDialogBox(position);
-//            }
-//        });
 
         listCommentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -237,17 +226,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
 
         }
 
-          /*  final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    insertComment();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                }
-            }, 500);
-
-            //getComment();*/
     }
 
     private boolean checkComment() {
@@ -464,35 +442,6 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    /*
-    public void showDialogBox(final int image_pos){
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.custom_dialog);
-
-        ImageView Image = dialog.findViewById(R.id.img);
-        Button btn_full = dialog.findViewById(R.id.btn_full);
-        Button btn_close = dialog.findViewById(R.id.btn_close);
-
-        Image.setImageBitmap(images.get(image_pos));
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btn_full.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(NewPlaceActivity.this, FullViewImage.class);
-                i.putExtra("img_id",images.get(image_pos));
-                startActivity(i);
-            }
-        });
-
-        dialog.show();
-    }*/
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -549,5 +498,12 @@ public class ViewPlaceActivity extends AppCompatActivity implements OnMapReadyCa
     private void getComment() {
 
 
+    }
+
+    public void gotoAuthorProfile(View view) {
+
+        Intent goToProfile = new Intent(ViewPlaceActivity.this, UserProfileActivity.class);
+        goToProfile.putExtra("userId", authorID);
+        startActivity(goToProfile);
     }
 }

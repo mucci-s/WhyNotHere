@@ -234,7 +234,7 @@ public class UserSettings extends AppCompatActivity {
         } else if (!(password.equals(confirmPassword))) {
             Toasty.error(getApplicationContext(), "INSERIRE UNA PASSWORD CORRETTA!", Toast.LENGTH_LONG).show();
             return false;
-        } else if (bio.length() > 40) {
+        } else if (bio.length() > 53) {
             Toasty.error(getApplicationContext(), "BIO TROPPO LUNGA!", Toast.LENGTH_LONG).show();
             return false;
         }else return true;
