@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,15 +60,6 @@ public class UserSettings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
 
-       /* this.userLogged = getIntent().getStringExtra("userLogged");
-
-        try {
-            JSONObject userObject = new JSONObject(userLogged);
-            userId = userObject.getString("_id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-
         this.getUserId();
         this.getUserData(userId);
 
@@ -111,7 +104,6 @@ public class UserSettings extends AppCompatActivity {
         }
 
         final String url = "https://whynothere-app.herokuapp.com/user/getuserbyid";
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
 
             @Override

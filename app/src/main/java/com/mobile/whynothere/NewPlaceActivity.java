@@ -432,7 +432,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
                             //mainCategoryRecycler.setAdapter(new CategoryItemRecyclerAdapter(getApplicationContext(),images));
                             title.getText().clear();
                             description.getText().clear();
-                            Toast.makeText(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
+                            Toasty.success(getApplicationContext(), "AGGIUNTO CON SUCCESSO!", Toast.LENGTH_LONG).show();
                             Intent goToHome = new Intent(getBaseContext(), MapsHomeActivity.class);
                             startActivity(goToHome);
                         }
@@ -500,7 +500,7 @@ public class NewPlaceActivity extends AppCompatActivity implements OnMapReadyCal
         if ((this.title.getText().toString().isEmpty()) || (this.description.getText().toString().isEmpty()) || (this.images.size() == 0)) {
             Toasty.error(getApplicationContext(), "COMPILARE TUTTI I CAMPI!", Toast.LENGTH_LONG).show();
             return false;
-        } else if ((title.length() < 3) || (title.length() > 25)) {
+        } else if ((title.length() < 3) || (title.length() > 50)) {
             Toasty.error(getApplicationContext(), "INSERIRE UN TITOLO VALIDO!", Toast.LENGTH_LONG).show();
             return false;
         } else if (description.length() > 150) {

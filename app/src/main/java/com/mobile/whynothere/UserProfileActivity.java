@@ -34,9 +34,6 @@ import org.json.JSONObject;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    //this.spottedPlacesButton.setMaxHeight(20); Problemi con icon
-    //this.spottedPlacesButton.setMaxWidth(20);
-
     private CircularImageView avatarView;
     private TextView nameSurnameView;
     private TextView usernameView;
@@ -48,37 +45,26 @@ public class UserProfileActivity extends AppCompatActivity {
     private boolean spottedPlacesPressed = true;
     private boolean likedPlacesPressed = false;
 
-    private BottomNavigationView navigationBar;
-
-    private String userLogged;
-
+    private String userPassedId;
+    private String userId;
     private String userName;
     private String userSurname;
     private String userUsername;
-    private String userId;
     private String userBio;
     private GridView gridView;
-
 
     UserPhotoFragment userPhotoFragment;
     UserLikedPhotoFragment userLikedPhotoFragment;
     FragmentManager fragmentManager;
 
+    private BottomNavigationView navigationBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-       /* this.userLogged = getIntent().getStringExtra("userLogged");
-        try {
-            JSONObject userObject = new JSONObject(userLogged);
-            userId = userObject.getString("_id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-*/
-        this.getUserId();
-        this.getUserData(userId);
 
+        this.getUserId();
 
         this.avatarView = this.findViewById(R.id.profileAvatarID);
         this.nameSurnameView = this.findViewById(R.id.profileNameSurnameID);
@@ -88,6 +74,14 @@ public class UserProfileActivity extends AppCompatActivity {
         this.spottedPlacesButton = this.findViewById(R.id.profileSpottedPlacesID);
         this.likedPlacesButton = this.findViewById(R.id.profileLikedPlacesID);
         this.gridView = this.findViewById(R.id.imageGridID);
+
+        this.userPassedId = getIntent().getStringExtra("userId");
+        if(this.userPassedId == null){
+            this.getUserData(userId);
+        }else{
+            this.getUserData(userPassedId);
+            this.settingsButton.setVisibility(View.INVISIBLE);
+        }
 
         this.navigationBar = (BottomNavigationView) findViewById(R.id.navigation_bar);
         this.navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -109,9 +103,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-
         this.userPhotoFragment = new UserPhotoFragment(userId);
-
         this.fragmentManager = getSupportFragmentManager();
         this.fragmentManager.beginTransaction().replace(R.id.frameLayoutID, userPhotoFragment).commit();
 
@@ -122,16 +114,18 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onStart();
 
         this.getUserId();
-        this.getUserData(this.userId);
-//        ImageAdaptor defaultImageAdaptor = new ImageAdaptor(getApplicationContext());
-//        this.gridView.setAdapter(defaultImageAdaptor);
-        this.navigationBar.setSelectedItemId(R.id.profile);
 
-       /* if(!this.userId.equals(this.userPassedId)){
+        this.userPassedId = getIntent().getStringExtra("userId");
+        if(this.userPassedId == null){
+            this.getUserData(userId);
+        }else{
+            this.getUserData(userPassedId);
             this.settingsButton.setVisibility(View.INVISIBLE);
-        }*/
+        }
 
+        this.navigationBar.setSelectedItemId(R.id.profile);
         this.settingsButton.setImageResource(R.drawable.settings_grey);
+
     }
 
     public void getUserId(){
@@ -175,9 +169,6 @@ public class UserProfileActivity extends AppCompatActivity {
                     usernameView.setText(userUsername);
                     userBio = user.getString("bio");
                     bioView.setText(userBio);
-
-
-
                     userPhotoFragment.setUserID(user.getString("_id"));
 
 //                    ImageAdaptor defaultImageAdaptor = new ImageAdaptor(getApplicationContext());
@@ -195,11 +186,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequest);
     }
-
-
-
-
-
 
     public void onClickNearlyButton(View view) {
         goToHome();
@@ -245,16 +231,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public void goToHome() {
         Intent goToHomeIntent = new Intent(this, MapsHomeActivity.class);
-        goToHomeIntent.putExtra("userLogged", userLogged);
+        //goToHomeIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToHomeIntent);
     }
 
     public void goToSettings() {
         Intent goToSettingsIntent = new Intent(this, UserSettings.class);
-        goToSettingsIntent.putExtra("userLogged", userLogged);
+        //goToSettingsIntent.putExtra("userLogged", userLogged);
         this.startActivity(goToSettingsIntent);
     }
-
 
     public void goToAddPlace() {
         Intent goToAddPlaceIntent = new Intent(this, NewPlaceActivity.class);
